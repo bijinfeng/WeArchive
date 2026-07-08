@@ -21,17 +21,18 @@
     "react": "catalog:react"
   },
   "devDependencies": {
+    "@fiahfy/icns": "^0.0.7",
+    "@resvg/resvg-js": "^2.6.2",
     "@testing-library/jest-dom": "catalog:test",
     "@testing-library/react": "catalog:test",
-    "@we-archive/tsconfig": "workspace:*",
     "@types/react": "catalog:types",
-    "sharp": "^0.35.3",
+    "@we-archive/tsconfig": "workspace:*",
+    "jsdom": "catalog:test",
     "png-to-ico": "^3.0.2",
-    "@fiahfy/icns-convert": "^0.0.12",
-    "tsx": "^4.23.0",
+    "sharp": "^0.35.3",
     "tsdown": "catalog:build",
-    "vitest": "catalog:test",
-    "jsdom": "catalog:test"
+    "tsx": "^4.23.0",
+    "vitest": "catalog:test"
   },
   "peerDependencies": {
     "react": "^19.0.0"
