@@ -1,5 +1,6 @@
 import { builtinModules } from "node:module";
 import { fileURLToPath, URL } from "node:url";
+import { astryxStylex } from "@astryxdesign/build/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "electron-vite";
 
@@ -53,7 +54,7 @@ export default defineConfig(({ mode }) => {
     },
     renderer: {
       envDir: workspaceRoot,
-      plugins: [react()],
+      plugins: [...astryxStylex(), react()],
       resolve: {
         alias: {
           "#": "./src/renderer/src",
