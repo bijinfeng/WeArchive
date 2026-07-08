@@ -3,27 +3,37 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./assetPaths": "./src/assetPaths.ts",
-    "./vite": "./src/vite.ts",
-    "./package.json": "./package.json"
-  },
-  "publishConfig": {
-    "exports": {
-      ".": "./dist/index.js",
-      "./assetPaths": "./dist/assetPaths.js",
-      "./vite": "./dist/vite.js",
-      "./package.json": "./package.json"
+    ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "scripts": {
-    "build": "vp pack src/index.ts src/assetPaths.ts src/vite.ts",
-    "test": "vitest run --config vitest.config.ts"
+    "build": "tsdown",
+    "test": "vitest run",
+    "gen:icons": "tsx scripts/generate-icons.ts"
   },
   "dependencies": {
     "react": "catalog:react"
   },
   "devDependencies": {
-    "@we-archive/tsconfig": "workspace:*"
+    "@testing-library/jest-dom": "catalog:test",
+    "@testing-library/react": "catalog:test",
+    "@we-archive/tsconfig": "workspace:*",
+    "@types/react": "catalog:types",
+    "sharp": "^0.35.3",
+    "png-to-ico": "^3.0.2",
+    "@fiahfy/icns-convert": "^0.0.12",
+    "tsx": "^4.23.0",
+    "tsdown": "catalog:build",
+    "vitest": "catalog:test",
+    "jsdom": "catalog:test"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
   }
 }
