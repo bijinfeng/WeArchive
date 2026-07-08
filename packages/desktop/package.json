@@ -1,0 +1,38 @@
+{
+  "name": "@we-archive/desktop",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "out/main/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bijinfeng/hexo-cms.git"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && electron-builder",
+    "postinstall": "npx install-electron && electron-builder install-app-deps",
+    "preview": "electron-vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
+    "electron-updater": "^6.8.3"
+  },
+  "devDependencies": {
+    "@tanstack/react-router": "catalog:tanstack",
+    "@tanstack/router-plugin": "catalog:tanstack",
+    "@types/react": "catalog:types",
+    "@types/react-dom": "catalog:types",
+    "@we-archive/tsconfig": "workspace:*",
+    "@vitejs/plugin-react": "catalog:react",
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "beta",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "vite": "catalog:build"
+  }
+}

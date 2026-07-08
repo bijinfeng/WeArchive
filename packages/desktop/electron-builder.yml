@@ -1,0 +1,54 @@
+appId: com.hexo-cms.app
+productName: Hexo CMS
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+  - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"
+  - "!.editorconfig"
+  - "!**/._*"
+  - "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}"
+  - "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}"
+  - "!**/{appveyor.yml,.travis.yml,circle.yml}"
+  - "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+  - "!node_modules/**/*.map"
+  - "!node_modules/**/*.ts"
+  - "!node_modules/**/*.md"
+  - "!node_modules/**/LICENSE"
+  - "!node_modules/**/CHANGELOG*"
+  - "!node_modules/**/tsconfig.json"
+  - "!node_modules/**/.tsbuildinfo"
+asar:
+  smartUnpack: true
+win:
+  executableName: hexo-cms
+  target:
+    - target: nsis
+      arch:
+        - x64
+mac:
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.inherit.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Utility
+npmRebuild: false
+publish:
+  provider: github
+  owner: bijinfeng
+  repo: hexo-cms
+  releaseType: draft

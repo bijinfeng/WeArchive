@@ -2,15 +2,16 @@
   "name": "pnpm-monorepo",
   "type": "module",
   "version": "1.0.0",
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@11.10.0",
   "description": "",
   "author": "",
   "keywords": [],
   "main": "index.js",
   "scripts": {
-    "prepare": "husky install",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "prepare": "husky",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
     "preinstall": "npx -y only-allow pnpm"
   },
   "config": {
@@ -19,22 +20,17 @@
     }
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.6.3",
-    "@commitlint/cli": "^18.6.0",
-    "commitizen": "^4.3.0",
-    "cz-git": "^1.8.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-format": "^0.1.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "fast-glob": "^3.3.2",
-    "husky": "^9.0.7",
-    "lint-staged": "^15.2.0",
-    "pnpm": "^8.15.1",
-    "typescript": "^5.3.3"
+    "@biomejs/biome": "^2.5.2",
+    "@commitlint/cli": "^21.2.0",
+    "commitizen": "^4.3.2",
+    "cz-git": "^1.13.1",
+    "fast-glob": "^3.3.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "pnpm": "^11.10.0",
+    "typescript": "^6.0.3"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*": "biome check --write --no-errors-on-unmatched"
   }
 }
