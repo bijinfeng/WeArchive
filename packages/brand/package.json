@@ -29,7 +29,6 @@
     "@we-archive/tsconfig": "workspace:*",
     "jsdom": "catalog:test",
     "png-to-ico": "^3.0.2",
-    "sharp": "^0.35.3",
     "tsdown": "catalog:build",
     "tsx": "^4.23.0",
     "vitest": "catalog:test"
