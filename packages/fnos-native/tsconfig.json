@@ -1,0 +1,16 @@
+{
+  "extends": "@we-archive/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node", "vite/client"],
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": false,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["backend/**/*", "frontend/src/**/*", "vite.frontend.config.ts"],
+  "exclude": ["node_modules", "dist", "frontend/dist", "wearchive/app/server"]
+}

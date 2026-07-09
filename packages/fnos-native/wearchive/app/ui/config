@@ -1,0 +1,14 @@
+{
+  ".url": {
+    "wearchive.main": {
+      "title": "WeArchive",
+      "icon": "images/icon_{0}.png",
+      "type": "iframe",
+      "protocol": "",
+      "gatewayPrefix": "/app/wearchive",
+      "gatewaySocket": "app.sock",
+      "url": "/app/wearchive",
+      "allUsers": true
+    }
+  }
+}

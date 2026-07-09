@@ -10,6 +10,14 @@ const __dirname = dirname(__filename);
 
 const SIZES = [16, 32, 48, 64, 128, 256, 512, 1024];
 
+function getPngBuffer(pngBuffers: Map<number, Buffer>, size: number): Buffer {
+  const buffer = pngBuffers.get(size);
+  if (!buffer) {
+    throw new Error(`PNG buffer for ${size}px was not generated.`);
+  }
+  return buffer;
+}
+
 async function main() {
   // 解析输出目录参数（--out <dir>）
   const args = process.argv.slice(2);
@@ -46,12 +54,12 @@ async function main() {
 
   // 2. icon.png（512×512，Linux）
   const pngPath = join(outputDir, "icon.png");
-  await writeFile(pngPath, pngBuffers.get(512)!);
+  await writeFile(pngPath, getPngBuffer(pngBuffers, 512));
   console.log(`[generate-icons] Wrote ${pngPath}`);
 
   // 3. icon.ico（Windows，16/32/48/64/128/256）
   const icoSizes = [16, 32, 48, 64, 128, 256];
-  const icoBuffers = icoSizes.map((s) => pngBuffers.get(s)!);
+  const icoBuffers = icoSizes.map((s) => getPngBuffer(pngBuffers, s));
   const icoBuffer = await PngToIco(icoBuffers);
   const icoPath = join(outputDir, "icon.ico");
   await writeFile(icoPath, icoBuffer);
@@ -61,7 +69,7 @@ async function main() {
   const icns = new Icns();
   const icnsSizes = [16, 32, 64, 128, 256, 512, 1024];
   for (const size of icnsSizes) {
-    const buffer = pngBuffers.get(size)!;
+    const buffer = getPngBuffer(pngBuffers, size);
     const types = Icns.supportedIconTypes.filter((type) => type.size === size);
     for (const { osType } of types) {
       icns.append(IcnsImage.fromPNG(buffer, osType));

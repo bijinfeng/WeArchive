@@ -1,0 +1,86 @@
+{
+  "name": "@we-archive/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./database": {
+      "types": {
+        "import": "./dist/database/index.d.mts",
+        "require": "./dist/database/index.d.cts"
+      },
+      "import": "./dist/database/index.mjs",
+      "require": "./dist/database/index.cjs"
+    },
+    "./services": {
+      "types": {
+        "import": "./dist/services/index.d.mts",
+        "require": "./dist/services/index.d.cts"
+      },
+      "import": "./dist/services/index.mjs",
+      "require": "./dist/services/index.cjs"
+    },
+    "./types": {
+      "types": {
+        "import": "./dist/types/index.d.mts",
+        "require": "./dist/types/index.d.cts"
+      },
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.cjs"
+    },
+    "./utils": {
+      "types": {
+        "import": "./dist/utils/index.d.mts",
+        "require": "./dist/utils/index.d.cts"
+      },
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "pnpm run build && node --input-type=module -e \"for (const entry of ['@we-archive/core','@we-archive/core/database','@we-archive/core/services','@we-archive/core/types','@we-archive/core/utils']) { const mod = await import(entry); if (!mod) throw new Error(entry) }\"",
+    "type-check": "tsc --noEmit"
+  },
+  "tsdown": {
+    "entry": {
+      "index": "src/index.ts",
+      "database/index": "src/database/index.ts",
+      "services/index": "src/services/index.ts",
+      "types/index": "src/types/index.ts",
+      "utils/index": "src/utils/index.ts"
+    },
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true,
+    "clean": true,
+    "deps": {
+      "skipNodeModulesBundle": true
+    }
+  },
+  "dependencies": {
+    "better-sqlite3": "catalog:database",
+    "drizzle-orm": "catalog:database",
+    "@node-rs/jieba": "^1.10.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "catalog:types",
+    "@types/node": "catalog:types",
+    "@we-archive/tsconfig": "workspace:*",
+    "drizzle-kit": "catalog:database",
+    "tsdown": "catalog:build",
+    "typescript": "catalog:types"
+  }
+}

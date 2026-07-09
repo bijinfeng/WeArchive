@@ -30,10 +30,10 @@
     "jsdom": "catalog:test",
     "png-to-ico": "^3.0.2",
     "tsdown": "catalog:build",
-    "tsx": "^4.23.0",
+    "tsx": "catalog:tooling",
     "vitest": "catalog:test"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "catalog:react"
   }
 }

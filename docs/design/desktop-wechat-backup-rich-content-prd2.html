@@ -1,0 +1,1019 @@
+
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>微信聊天记录备份工具 PRD-2 侧栏分组完整稿</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#e8edf2;
+  --window:#f7f9fb;
+  --sidebar:#f3f6f8;
+  --surface:#fff;
+  --surface-2:#f1f5f7;
+  --surface-3:#e7edf1;
+  --hover:#dfe8ed;
+  --line:#d7e0e7;
+  --line-2:#c2ced8;
+  --text:#101820;
+  --muted:#61717e;
+  --subtle:#8a98a5;
+  --green:#0b7a46;
+  --green-2:#e7f6ee;
+  --green-3:#bae7cc;
+  --blue:#1f66a8;
+  --blue-2:#e6f0fb;
+  --amber:#93620f;
+  --amber-2:#fff1d2;
+  --red:#b42318;
+  --red-2:#fee4e2;
+  --purple:#6457c6;
+  --purple-2:#eeecff;
+  --shadow:0 26px 80px rgba(24,39,54,.16),0 2px 14px rgba(24,39,54,.08);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#070b10;
+  --window:#101922;
+  --sidebar:#111a23;
+  --surface:#17222d;
+  --surface-2:#111922;
+  --surface-3:#22303d;
+  --hover:#2a3946;
+  --line:#2d3c49;
+  --line-2:#425362;
+  --text:#eaf1f7;
+  --muted:#a1afbd;
+  --subtle:#748596;
+  --green:#5bd28c;
+  --green-2:#112c1f;
+  --green-3:#256342;
+  --blue:#7cbdff;
+  --blue-2:#102a44;
+  --amber:#f1c45c;
+  --amber-2:#342813;
+  --red:#ff887b;
+  --red-2:#351b1b;
+  --purple:#b0a8ff;
+  --purple-2:#251f48;
+  --shadow:0 26px 80px rgba(0,0,0,.48),0 2px 14px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+html,body{height:100%;min-height:0}
+body{
+  margin:0;
+  font-family:var(--font);
+  color:var(--text);
+  overflow:hidden;
+  letter-spacing:0;
+  background:
+    radial-gradient(circle at 18% 7%,rgba(11,122,70,.11),transparent 28%),
+    radial-gradient(circle at 88% 12%,rgba(31,102,168,.13),transparent 30%),
+    linear-gradient(135deg,var(--bg),#f7f9fb 64%,#e8edf2);
+}
+html[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 18% 7%,rgba(91,210,140,.12),transparent 28%),
+    radial-gradient(circle at 88% 12%,rgba(124,189,255,.13),transparent 30%),
+    linear-gradient(135deg,#070a0f,#111821 64%,#080c12);
+}
+button,input,select{font:inherit}
+button{border:0;cursor:pointer}
+button[disabled]{opacity:.52;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+mark{background:#fff0a8;color:#101820;border-radius:4px;padding:0 2px}
+html[data-theme="dark"] mark{background:#574615;color:#fff2ad}
+.stage{height:100dvh;min-height:0;padding:22px;display:grid;place-items:center;overflow:hidden}
+.window{
+  width:min(1480px,calc(100vw - 44px));
+  height:min(920px,calc(100dvh - 44px));
+  min-height:min(720px,calc(100dvh - 44px));
+  display:grid;
+  grid-template-columns:268px minmax(0,1fr);
+  background:var(--window);
+  border:1px solid rgba(126,143,158,.48);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.sidebar{
+  min-width:0;
+  min-height:0;
+  display:grid;
+  grid-template-rows:auto auto minmax(0,1fr) auto;
+  background:var(--sidebar);
+  border-right:1px solid var(--line);
+  overflow:hidden;
+}
+.brand{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+.brand-name{font-size:17px;font-weight:860;line-height:1.15}
+.brand-sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+.account-strip{
+  margin-top:14px;
+  padding:10px;
+  border-radius:8px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--green),#31aa69);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.avatar.small{width:30px;height:30px;border-radius:10px;font-size:12px}
+.avatar.blue{background:linear-gradient(135deg,var(--blue),#54a5e6)}
+.avatar.amber{background:linear-gradient(135deg,#b26e11,#e9a437)}
+.avatar.purple{background:linear-gradient(135deg,#6457c6,#9d8cff)}
+.account-text{min-width:0}
+.account-name{font-size:13px;font-weight:820;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.account-meta{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-search{padding:12px 12px 8px}
+.search-box{
+  height:36px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 10px;
+}
+.search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:13px}
+.search-count{font-size:11px;color:var(--muted);background:var(--surface-3);border-radius:6px;padding:3px 6px;white-space:nowrap}
+.nav{padding:8px 10px 12px;overflow:auto}
+.nav::-webkit-scrollbar,.page::-webkit-scrollbar,.messages::-webkit-scrollbar,.scroll-area::-webkit-scrollbar{width:10px;height:10px}
+.nav::-webkit-scrollbar-thumb,.page::-webkit-scrollbar-thumb,.messages::-webkit-scrollbar-thumb,.scroll-area::-webkit-scrollbar-thumb{
+  background:var(--line-2);
+  border:2px solid transparent;
+  border-radius:10px;
+  background-clip:content-box;
+}
+.nav-group{
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:rgba(255,255,255,.46);
+  margin-bottom:10px;
+}
+html[data-theme="dark"] .nav-group{background:rgba(255,255,255,.025)}
+.nav-group-title{padding:2px 4px 8px;font-size:11px;font-weight:860;color:var(--subtle);letter-spacing:.02em}
+.nav-btn{
+  width:100%;
+  height:38px;
+  border-radius:8px;
+  padding:0 10px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  background:transparent;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:760;
+  text-align:left;
+  transition:.15s;
+}
+.nav-btn:hover{background:var(--hover);color:var(--text)}
+.nav-btn.active{background:var(--green-2);color:var(--green)}
+.nav-symbol{
+  width:22px;
+  height:22px;
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  font-size:11px;
+  font-weight:900;
+  background:var(--surface-3);
+  color:var(--muted);
+}
+.nav-btn.active .nav-symbol{background:var(--green);color:#fff}
+.nav-label{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-badge{
+  margin-left:auto;
+  min-width:20px;
+  height:20px;
+  border-radius:999px;
+  padding:0 6px;
+  display:grid;
+  place-items:center;
+  font-size:11px;
+  font-weight:800;
+  background:var(--surface-3);
+  color:var(--muted);
+}
+.nav-btn.active .nav-badge{background:var(--green-3);color:var(--green)}
+.side-footer{padding:12px;border-top:1px solid var(--line);display:grid;gap:10px}
+.theme-toggle{
+  height:38px;
+  border-radius:8px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 10px;
+  font-size:13px;
+  font-weight:780;
+}
+.toggle-track{width:38px;height:22px;border-radius:999px;background:var(--surface-3);position:relative;transition:.16s}
+.toggle-dot{width:18px;height:18px;border-radius:50%;background:var(--surface);position:absolute;left:2px;top:2px;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:.16s}
+html[data-theme="dark"] .toggle-track{background:var(--green-3)}
+html[data-theme="dark"] .toggle-dot{left:18px}
+.storage-line{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}
+.progress{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+.progress span{display:block;height:100%;width:64%;border-radius:inherit;background:var(--green)}
+.main{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);overflow:hidden}
+#content{min-height:0;overflow:hidden}
+.page{
+  height:100%;
+  min-height:0;
+  overflow:auto;
+  padding:26px;
+  display:none;
+}
+.page.active{display:block}
+.page-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+.eyebrow{font-size:12px;font-weight:850;color:var(--green);margin-bottom:7px}
+h1{font-size:24px;line-height:1.16;margin:0;font-weight:880;letter-spacing:0}
+h2{font-size:16px;margin:0;font-weight:850}
+h3{font-size:14px;margin:0;font-weight:840}
+.page-desc{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.6;max-width:760px}
+.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  height:34px;
+  border-radius:8px;
+  padding:0 12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  background:var(--surface-3);
+  color:var(--text);
+  font-size:13px;
+  font-weight:780;
+  white-space:nowrap;
+  transition:.15s;
+}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{filter:brightness(.94)}
+.btn.blue{background:var(--blue-2);color:var(--blue)}
+.btn.danger{background:var(--red-2);color:var(--red)}
+.btn.flat{background:transparent;color:var(--muted)}
+.btn.flat:hover{background:var(--surface-3);color:var(--text)}
+.chip{
+  height:26px;
+  border-radius:999px;
+  padding:0 9px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  font-weight:760;
+  background:var(--surface-3);
+  color:var(--muted);
+}
+.chip.green{background:var(--green-2);color:var(--green)}
+.chip.blue{background:var(--blue-2);color:var(--blue)}
+.chip.amber{background:var(--amber-2);color:var(--amber)}
+.chip.red{background:var(--red-2);color:var(--red)}
+.dot-state{width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+.panel-head{
+  min-height:48px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.panel-body{padding:16px}
+.grid{display:grid;gap:14px}
+.home-grid{grid-template-columns:minmax(0,1.5fr) minmax(320px,.9fr);align-items:start}
+.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{
+  padding:15px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:760}
+.kpi-value{font-size:25px;font-weight:900;margin-top:8px;line-height:1}
+.kpi-foot{font-size:12px;color:var(--subtle);margin-top:8px}
+.account-hero{
+  background:linear-gradient(135deg,var(--surface),var(--surface-2));
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+}
+.account-hero-top{
+  padding:20px;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.account-large{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--green),#36ad6f);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  font-weight:950;
+}
+.account-title{font-size:19px;font-weight:900}
+.account-id{font-size:13px;color:var(--muted);margin-top:4px}
+.account-hero-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:0}
+.account-stat{padding:15px 18px;border-right:1px solid var(--line)}
+.account-stat:last-child{border-right:0}
+.stat-label{font-size:12px;color:var(--muted);font-weight:760}
+.stat-value{font-size:16px;font-weight:880;margin-top:6px}
+.account-list{display:grid;gap:8px}
+.account-row{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+  padding:10px;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  text-align:left;
+  color:var(--text);
+  transition:.15s;
+}
+.account-row:hover{background:var(--surface-2)}
+.account-row.active{border-color:var(--green);box-shadow:0 0 0 3px rgba(11,122,70,.08)}
+.account-row strong{font-size:13px}
+.account-row span{display:block;font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timeline{display:grid;gap:10px}
+.task-row{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.task-row:last-child{border-bottom:0}
+.task-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:var(--green-2);
+  color:var(--green);
+  font-weight:900;
+  font-size:12px;
+}
+.task-title{font-size:13px;font-weight:820}
+.task-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.task-right{text-align:right}
+.layout-3{
+  height:100%;
+  min-height:590px;
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr) 300px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--surface);
+}
+.column{min-width:0;min-height:0;border-right:1px solid var(--line);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.column:last-child{border-right:0}
+.column-head{padding:12px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.list{overflow:auto}
+.list-item{
+  width:100%;
+  padding:12px;
+  border-bottom:1px solid var(--line);
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  display:grid;
+  gap:5px;
+}
+.list-item:hover,.list-item.active{background:var(--surface-2)}
+.list-title{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:820}
+.list-meta{font-size:12px;color:var(--muted);line-height:1.45}
+.messages{overflow:auto;padding:18px;display:grid;gap:14px;align-content:start;background:var(--surface-2)}
+.msg{max-width:74%;display:grid;gap:5px}
+.msg.me{margin-left:auto}
+.msg-bubble{
+  border:1px solid var(--line);
+  background:var(--surface);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:13px;
+  line-height:1.55;
+}
+.msg.me .msg-bubble{background:var(--green-2);border-color:var(--green-3)}
+.msg-time{font-size:11px;color:var(--subtle)}
+.detail-pane{padding:14px;overflow:auto}
+.detail-section{padding:12px 0;border-bottom:1px solid var(--line)}
+.detail-section:last-child{border-bottom:0}
+.key-value{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin-top:8px;color:var(--muted)}
+.key-value strong{color:var(--text)}
+.table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.table th,.table td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+.table th{font-size:12px;color:var(--muted);font-weight:820;background:var(--surface-2)}
+.table tr:last-child td{border-bottom:0}
+.flow-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:14px;align-items:start}
+.step-list{display:grid;gap:10px}
+.step{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:12px;
+  align-items:center;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+}
+.step-number{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--surface-3);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+}
+.step.done .step-number{background:var(--green);color:#fff}
+.step.active{border-color:var(--green)}
+.step-title{font-size:13px;font-weight:850}
+.step-desc{font-size:12px;color:var(--muted);margin-top:3px}
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.option{
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+  padding:14px;
+  color:var(--text);
+  text-align:left;
+}
+.option:hover,.option.active{border-color:var(--green);background:var(--green-2)}
+.option strong{display:block;font-size:14px}
+.option span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
+.contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.contact-card{
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+  padding:13px;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+.contact-card strong{font-size:13px}
+.contact-card span{display:block;font-size:12px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.settings-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.setting-row:last-child{border-bottom:0}
+.setting-title{font-size:13px;font-weight:820}
+.setting-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.select{
+  height:34px;
+  min-width:150px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  color:var(--text);
+  padding:0 10px;
+}
+.queue{
+  position:absolute;
+  right:42px;
+  bottom:38px;
+  width:360px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:0 16px 44px rgba(16,24,32,.16);
+  overflow:hidden;
+  display:none;
+  z-index:20;
+}
+.queue.open{display:block}
+.queue .task-row{padding:12px 14px}
+.toast{
+  position:absolute;
+  left:50%;
+  bottom:34px;
+  transform:translateX(-50%) translateY(16px);
+  opacity:0;
+  pointer-events:none;
+  background:var(--text);
+  color:var(--surface);
+  border-radius:8px;
+  padding:10px 13px;
+  font-size:13px;
+  font-weight:760;
+  transition:.18s;
+  z-index:30;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{
+  border:1px dashed var(--line-2);
+  border-radius:8px;
+  padding:22px;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  background:var(--surface-2);
+}
+@media (max-width:1100px){
+  .window{grid-template-columns:238px minmax(0,1fr)}
+  .home-grid,.flow-grid,.settings-grid{grid-template-columns:1fr}
+  .kpi-grid,.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .layout-3{grid-template-columns:240px minmax(0,1fr)}
+  .layout-3 .column:last-child{display:none}
+}
+@media (max-width:760px){
+  .stage{padding:0}
+  .window{width:100vw;height:100dvh;min-height:0;border-radius:0;grid-template-columns:1fr}
+  .sidebar{display:none}
+  .page{padding:18px}
+  .kpi-grid,.contact-grid,.option-grid{grid-template-columns:1fr}
+  .account-hero-top{grid-template-columns:auto minmax(0,1fr)}
+  .account-hero-top .actions{grid-column:1/-1;justify-content:flex-start}
+  .account-hero-bottom{grid-template-columns:1fr}
+  .account-stat{border-right:0;border-bottom:1px solid var(--line)}
+  .account-stat:last-child{border-bottom:0}
+  .layout-3{grid-template-columns:1fr;min-height:620px}
+  .layout-3 .column:first-child{display:none}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="window">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-name">微信聊天记录备份</div>
+        <div class="brand-sub">本机加密存储 · 多账号管理 · 可恢复到微信</div>
+        <div class="account-strip">
+          <div class="avatar" id="sideAvatar">林</div>
+          <div class="account-text">
+            <div class="account-name" id="sideAccountName">林小满</div>
+            <div class="account-meta" id="sideAccountMeta">wx_lin_2026 · 已连接</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-search">
+        <label class="search-box">
+          <span style="color:var(--subtle);font-weight:900;font-size:13px">搜</span>
+          <input id="globalSearch" placeholder="搜索聊天、联系人、任务" aria-label="搜索聊天、联系人、任务">
+          <span class="search-count" id="searchCount">0</span>
+        </label>
+      </div>
+
+      <nav class="nav" aria-label="主导航">
+        <div class="nav-group">
+          <div class="nav-group-title">总览</div>
+          <button class="nav-btn active" data-view="home"><span class="nav-symbol">总</span><span class="nav-label">首页总览</span></button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">数据管理</div>
+          <button class="nav-btn" data-view="chats"><span class="nav-symbol">聊</span><span class="nav-label">聊天记录</span><span class="nav-badge">12</span></button>
+          <button class="nav-btn" data-view="contacts"><span class="nav-symbol">联</span><span class="nav-label">联系人</span></button>
+          <button class="nav-btn" data-view="tasks"><span class="nav-symbol">备</span><span class="nav-label">备份任务</span><span class="nav-badge">3</span></button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">连接与恢复</div>
+          <button class="nav-btn" data-view="transfer"><span class="nav-symbol">导</span><span class="nav-label">导入导出</span></button>
+          <button class="nav-btn" data-view="restore"><span class="nav-symbol">恢</span><span class="nav-label">恢复到微信</span></button>
+          <button class="nav-btn" data-view="connect"><span class="nav-symbol">连</span><span class="nav-label">连接微信备份</span></button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">系统</div>
+          <button class="nav-btn" data-view="settings"><span class="nav-symbol">设</span><span class="nav-label">设置</span></button>
+        </div>
+      </nav>
+
+      <div class="side-footer">
+        <button class="theme-toggle" id="themeToggle" type="button">
+          <span id="themeLabel">暗黑模式</span>
+          <span class="toggle-track"><span class="toggle-dot"></span></span>
+        </button>
+        <div class="storage-line"><span>本机库</span><strong>64%</strong></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div id="content">
+        <section class="page active" id="page-home">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">当前工作区</div>
+              <h1>首页总览</h1>
+              <p class="page-desc">当前账号、最近备份、数据规模和风险状态集中在首页，进入后先确认操作对象。</p>
+            </div>
+            <div class="actions">
+              <button class="btn blue" id="queueBtn">任务队列</button>
+              <button class="btn primary" data-view-jump="transfer">导入导出</button>
+            </div>
+          </div>
+
+          <div class="grid kpi-grid">
+            <div class="kpi"><div class="kpi-label">已备份消息</div><div class="kpi-value" id="kpiMessages">186,420</div><div class="kpi-foot">覆盖 36 个会话</div></div>
+            <div class="kpi"><div class="kpi-label">附件体积</div><div class="kpi-value">42.8GB</div><div class="kpi-foot">图片、视频、文件</div></div>
+            <div class="kpi"><div class="kpi-label">最近备份</div><div class="kpi-value" id="kpiBackup">09:42</div><div class="kpi-foot">今天自动完成</div></div>
+            <div class="kpi"><div class="kpi-label">待处理任务</div><div class="kpi-value">3</div><div class="kpi-foot">1 个需要确认</div></div>
+          </div>
+
+          <div class="grid home-grid" style="margin-top:14px">
+            <div class="grid">
+              <div class="account-hero">
+                <div class="account-hero-top">
+                  <div class="account-large" id="heroAvatar">林</div>
+                  <div>
+                    <div class="account-title" id="heroName">林小满</div>
+                    <div class="account-id" id="heroId">微信号 wx_lin_2026 · iPhone 15 Pro · 已连接</div>
+                  </div>
+                  <div class="actions">
+                    <span class="chip green"><span class="dot-state"></span>备份正常</span>
+                    <button class="btn" data-view-jump="chats">查看记录</button>
+                  </div>
+                </div>
+                <div class="account-hero-bottom">
+                  <div class="account-stat"><div class="stat-label">聊天记录</div><div class="stat-value" id="heroChats">36 个会话</div></div>
+                  <div class="account-stat"><div class="stat-label">时间范围</div><div class="stat-value">2021.03 - 今天</div></div>
+                  <div class="account-stat"><div class="stat-label">加密状态</div><div class="stat-value">本机密钥保护</div></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head"><h2>最近活动</h2><span class="chip green">自动同步开启</span></div>
+                <div class="panel-body timeline">
+                  <div class="task-row"><div class="task-icon">成</div><div><div class="task-title">林小满的图片附件增量备份完成</div><div class="task-meta">处理 1,284 个文件 · 用时 3 分 12 秒</div></div><div class="task-right"><span class="chip green">完成</span></div></div>
+                  <div class="task-row"><div class="task-icon">待</div><div><div class="task-title">家庭群导出为 HTML</div><div class="task-meta">等待选择导出位置</div></div><div class="task-right"><span class="chip amber">待确认</span></div></div>
+                  <div class="task-row"><div class="task-icon">险</div><div><div class="task-title">检测到旧版备份库</div><div class="task-meta">可迁移为新版索引，原始文件保持不变</div></div><div class="task-right"><button class="btn blue">查看</button></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <h2>微信账号列表</h2>
+                <button class="btn flat">重新扫描</button>
+              </div>
+              <div class="panel-body account-list">
+                <button class="account-row active" data-account="lin" data-name="林小满" data-meta="wx_lin_2026 · 已连接" data-avatar="林" data-messages="186,420" data-chats="36 个会话" data-backup="09:42">
+                  <div class="avatar small">林</div><div><strong>林小满</strong><span>wx_lin_2026 · 今天 09:42</span></div><span class="chip green">当前</span>
+                </button>
+                <button class="account-row" data-account="work" data-name="工作微信" data-meta="wx_workdesk · 待备份" data-avatar="工" data-messages="92,618" data-chats="21 个会话" data-backup="昨天">
+                  <div class="avatar small blue">工</div><div><strong>工作微信</strong><span>wx_workdesk · 昨天 18:30</span></div><span class="chip amber">待备份</span>
+                </button>
+                <button class="account-row" data-account="family" data-name="家庭账号" data-meta="wx_familyhub · 离线" data-avatar="家" data-messages="58,093" data-chats="14 个会话" data-backup="周二">
+                  <div class="avatar small amber">家</div><div><strong>家庭账号</strong><span>wx_familyhub · 设备离线</span></div><span class="chip">离线</span>
+                </button>
+                <button class="account-row" data-account="archive" data-name="旧手机归档" data-meta="wx_archive2023 · 只读" data-avatar="旧" data-messages="231,006" data-chats="48 个会话" data-backup="6月28日">
+                  <div class="avatar small purple">旧</div><div><strong>旧手机归档</strong><span>wx_archive2023 · 只读备份</span></div><span class="chip blue">归档</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-chats">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">数据管理</div>
+              <h1>聊天记录</h1>
+              <p class="page-desc">三栏阅读结构：左侧会话，中间消息流，右侧会话属性与可导出范围。</p>
+            </div>
+            <div class="actions"><button class="btn">选择模式</button><button class="btn primary" data-view-jump="transfer">导出选中</button></div>
+          </div>
+          <div class="layout-3">
+            <div class="column">
+              <div class="column-head">
+                <label class="search-box"><input placeholder="搜索会话" aria-label="搜索会话"><span class="search-count">12</span></label>
+              </div>
+              <div class="list scroll-area">
+                <button class="list-item active"><div class="list-title"><strong>项目推进群</strong><span>09:18</span></div><div class="list-meta">王然：今晚先确认导出格式...</div></button>
+                <button class="list-item"><div class="list-title"><strong>家庭群</strong><span>昨天</span></div><div class="list-meta">妈妈：照片我已经收到了</div></button>
+                <button class="list-item"><div class="list-title"><strong>陈晓</strong><span>周二</span></div><div class="list-meta">语音 00:18 · 2 个附件</div></button>
+                <button class="list-item"><div class="list-title"><strong>文件传输助手</strong><span>7月4日</span></div><div class="list-meta">季度报告-final.pdf</div></button>
+                <button class="list-item"><div class="list-title"><strong>旅行计划</strong><span>6月30日</span></div><div class="list-meta">酒店订单和航班截图</div></button>
+              </div>
+            </div>
+            <div class="column">
+              <div class="column-head">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <div><h2>项目推进群</h2><div class="list-meta">18 位成员 · 2023.01 - 今天</div></div>
+                  <span class="chip green">已索引</span>
+                </div>
+              </div>
+              <div class="messages">
+                <div class="msg"><div class="msg-time">09:12 王然</div><div class="msg-bubble">今天先把 PRD 里的恢复流程补完整，导出格式保留 HTML、PDF、CSV 三种。</div></div>
+                <div class="msg me"><div class="msg-time">09:14 我</div><div class="msg-bubble">可以，恢复到微信要单独做风险确认，避免用户误覆盖。</div></div>
+                <div class="msg"><div class="msg-time">09:18 刘佳</div><div class="msg-bubble">附件里有一份旧库样例，我放到共享目录了。</div></div>
+                <div class="msg me"><div class="msg-time">09:20 我</div><div class="msg-bubble">收到，我会先跑只读扫描，再生成迁移报告。</div></div>
+              </div>
+            </div>
+            <div class="detail-pane">
+              <div class="detail-section"><h3>会话信息</h3><div class="key-value"><span>消息数</span><strong>18,642</strong></div><div class="key-value"><span>附件</span><strong>2.4GB</strong></div><div class="key-value"><span>成员</span><strong>18</strong></div></div>
+              <div class="detail-section"><h3>导出范围</h3><div class="key-value"><span>默认格式</span><strong>HTML</strong></div><div class="key-value"><span>时间范围</span><strong>全部</strong></div><div class="key-value"><span>包含附件</span><strong>是</strong></div></div>
+              <div class="detail-section"><button class="btn primary" style="width:100%" data-view-jump="transfer">创建导出任务</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-contacts">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">数据管理</div>
+              <h1>联系人</h1>
+              <p class="page-desc">联系人支持按账号、标签、最近聊天和备份状态筛选。</p>
+            </div>
+            <div class="actions"><button class="btn">同步联系人</button><button class="btn primary">导出通讯录</button></div>
+          </div>
+          <div class="grid contact-grid">
+            <div class="contact-card"><div class="avatar small">王</div><div><strong>王然</strong><span>项目推进群 · 12,408 条消息</span></div></div>
+            <div class="contact-card"><div class="avatar small blue">陈</div><div><strong>陈晓</strong><span>单聊 · 2 个待备份附件</span></div></div>
+            <div class="contact-card"><div class="avatar small amber">妈</div><div><strong>妈妈</strong><span>家庭群 · 最近备份 今天</span></div></div>
+            <div class="contact-card"><div class="avatar small purple">刘</div><div><strong>刘佳</strong><span>工作联系人 · 已加密</span></div></div>
+            <div class="contact-card"><div class="avatar small">周</div><div><strong>周医生</strong><span>图片 186 张 · 可导出</span></div></div>
+            <div class="contact-card"><div class="avatar small blue">助</div><div><strong>文件传输助手</strong><span>文件 14.2GB · 高占用</span></div></div>
+          </div>
+        </section>
+
+        <section class="page" id="page-tasks">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">数据管理</div>
+              <h1>备份任务</h1>
+              <p class="page-desc">备份、导入、导出、恢复任务统一排队，失败项保留可重试原因。</p>
+            </div>
+            <div class="actions"><button class="btn">暂停全部</button><button class="btn primary" id="newTaskBtn">新增备份</button></div>
+          </div>
+          <table class="table">
+            <thead><tr><th>任务</th><th>账号</th><th>类型</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody id="taskTable">
+              <tr><td>图片附件增量备份</td><td>林小满</td><td>自动备份</td><td><span class="chip green">完成</span></td><td>今天 09:42</td><td><button class="btn flat">详情</button></td></tr>
+              <tr><td>家庭群 HTML 导出</td><td>林小满</td><td>导出</td><td><span class="chip amber">待确认</span></td><td>今天 09:31</td><td><button class="btn blue">继续</button></td></tr>
+              <tr><td>旧手机归档索引</td><td>旧手机归档</td><td>导入</td><td><span class="chip blue">进行中</span></td><td>今天 08:56</td><td><button class="btn flat">暂停</button></td></tr>
+              <tr><td>恢复到工作微信</td><td>工作微信</td><td>恢复</td><td><span class="chip red">需处理</span></td><td>昨天 18:22</td><td><button class="btn danger">处理</button></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="page" id="page-transfer">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">连接与恢复</div>
+              <h1>导入导出</h1>
+              <p class="page-desc">导入和导出使用同一套流程工作台，右侧持续显示范围、风险和任务队列。</p>
+            </div>
+            <div class="actions"><button class="btn">保存草稿</button><button class="btn primary" id="startExportBtn">开始导出</button></div>
+          </div>
+          <div class="flow-grid">
+            <div class="grid">
+              <div class="panel">
+                <div class="panel-head"><h2>选择操作</h2><span class="chip green">当前账号：林小满</span></div>
+                <div class="panel-body">
+                  <div class="option-grid">
+                    <button class="option active"><strong>导出聊天记录</strong><span>将选定会话导出为 HTML、PDF、CSV 或原始归档。</span></button>
+                    <button class="option"><strong>导入备份库</strong><span>扫描旧手机、外置磁盘或微信备份目录。</span></button>
+                    <button class="option"><strong>迁移到新库</strong><span>只读检查旧库，生成兼容索引和迁移报告。</span></button>
+                    <button class="option"><strong>导出联系人</strong><span>按账号、标签或最近会话导出通讯录。</span></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head"><h2>流程</h2><span class="chip blue">4 步</span></div>
+                <div class="panel-body step-list">
+                  <div class="step done"><div class="step-number">1</div><div><div class="step-title">选择数据范围</div><div class="step-desc">项目推进群、家庭群、文件传输助手</div></div><span class="chip green">完成</span></div>
+                  <div class="step active"><div class="step-number">2</div><div><div class="step-title">选择导出格式</div><div class="step-desc">HTML 可离线查看，PDF 适合归档打印</div></div><button class="btn blue">配置</button></div>
+                  <div class="step"><div class="step-number">3</div><div><div class="step-title">确认附件策略</div><div class="step-desc">图片原图、视频压缩、文件保持原名</div></div><span class="chip">待处理</span></div>
+                  <div class="step"><div class="step-number">4</div><div><div class="step-title">生成任务</div><div class="step-desc">加入队列后可在后台执行</div></div><span class="chip">待处理</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><h2>范围与风险</h2><span class="chip amber">需确认</span></div>
+              <div class="panel-body">
+                <div class="detail-section"><h3>导出摘要</h3><div class="key-value"><span>会话</span><strong>3 个</strong></div><div class="key-value"><span>消息</span><strong>31,092 条</strong></div><div class="key-value"><span>附件</span><strong>6.8GB</strong></div></div>
+                <div class="detail-section"><h3>风险提示</h3><p class="page-desc" style="margin:8px 0 0">家庭群中包含 14 个超过 200MB 的视频。导出为 PDF 时会生成附件目录，视频保留为独立文件。</p></div>
+                <div class="detail-section"><button class="btn primary" style="width:100%" id="sideStartExportBtn">加入任务队列</button></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-restore">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">连接与恢复</div>
+              <h1>恢复到微信</h1>
+              <p class="page-desc">恢复流程默认只读预检，写入前展示目标账号、冲突和覆盖范围。</p>
+            </div>
+            <div class="actions"><button class="btn">预检</button><button class="btn danger">开始恢复</button></div>
+          </div>
+          <div class="grid home-grid">
+            <div class="panel">
+              <div class="panel-head"><h2>恢复计划</h2><span class="chip red">高风险操作</span></div>
+              <div class="panel-body step-list">
+                <div class="step done"><div class="step-number">1</div><div><div class="step-title">选择备份源</div><div class="step-desc">林小满 · 2026-07-09 09:42</div></div><span class="chip green">完成</span></div>
+                <div class="step active"><div class="step-number">2</div><div><div class="step-title">选择目标微信</div><div class="step-desc">工作微信 · 当前在线</div></div><button class="btn blue">更换</button></div>
+                <div class="step"><div class="step-number">3</div><div><div class="step-title">冲突处理</div><div class="step-desc">检测到 126 条可能重复消息</div></div><span class="chip amber">待确认</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>安全确认</h2></div>
+              <div class="panel-body">
+                <div class="empty">恢复前会创建目标账号快照。未确认覆盖策略前，不会写入微信数据。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-connect">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">连接与恢复</div>
+              <h1>连接微信备份</h1>
+              <p class="page-desc">支持扫描本机微信、外置磁盘、旧手机备份目录和只读归档库。</p>
+            </div>
+            <div class="actions"><button class="btn primary">扫描设备</button></div>
+          </div>
+          <div class="grid home-grid">
+            <div class="panel">
+              <div class="panel-head"><h2>连接来源</h2></div>
+              <div class="panel-body step-list">
+                <div class="step active"><div class="step-number">本</div><div><div class="step-title">本机微信</div><div class="step-desc">检测到 2 个账号，1 个正在运行</div></div><span class="chip green">可用</span></div>
+                <div class="step"><div class="step-number">盘</div><div><div class="step-title">外置磁盘</div><div class="step-desc">未连接</div></div><button class="btn">选择目录</button></div>
+                <div class="step"><div class="step-number">旧</div><div><div class="step-title">旧版备份库</div><div class="step-desc">支持迁移为新版索引</div></div><button class="btn blue">导入</button></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>连接状态</h2><span class="chip green">正常</span></div>
+              <div class="panel-body">
+                <div class="key-value"><span>运行中的微信</span><strong>林小满</strong></div>
+                <div class="key-value"><span>数据目录</span><strong>已授权</strong></div>
+                <div class="key-value"><span>附件目录</span><strong>可读写</strong></div>
+                <div class="key-value"><span>加密密钥</span><strong>本机钥匙串</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-settings">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">系统</div>
+              <h1>设置</h1>
+              <p class="page-desc">主题、存储、安全、自动备份和导出偏好集中管理。</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="panel">
+              <div class="panel-head"><h2>外观与系统</h2></div>
+              <div class="panel-body">
+                <div class="setting-row"><div><div class="setting-title">暗黑模式</div><div class="setting-desc">与侧栏底部开关同步。</div></div><button class="btn" id="settingsThemeBtn">切换</button></div>
+                <div class="setting-row"><div><div class="setting-title">系统外观</div><div class="setting-desc">未手动选择时跟随系统。</div></div><select class="select"><option>跟随系统</option><option>浅色</option><option>深色</option></select></div>
+                <div class="setting-row"><div><div class="setting-title">窗口风格</div><div class="setting-desc">桌面端圆角和阴影。</div></div><select class="select"><option>macOS</option><option>Windows</option></select></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>备份与安全</h2></div>
+              <div class="panel-body">
+                <div class="setting-row"><div><div class="setting-title">自动备份</div><div class="setting-desc">微信退出后执行增量备份。</div></div><span class="chip green">开启</span></div>
+                <div class="setting-row"><div><div class="setting-title">本机加密</div><div class="setting-desc">密钥保存在系统安全存储。</div></div><span class="chip green">已启用</span></div>
+                <div class="setting-row"><div><div class="setting-title">导出默认格式</div><div class="setting-desc">用于聊天记录批量导出。</div></div><select class="select"><option>HTML</option><option>PDF</option><option>CSV</option></select></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="queue" id="queue">
+      <div class="panel-head"><h2>任务队列</h2><button class="btn flat" id="closeQueue">关闭</button></div>
+      <div>
+        <div class="task-row"><div class="task-icon">导</div><div><div class="task-title">家庭群 HTML 导出</div><div class="task-meta">等待选择目录</div></div><span class="chip amber">待确认</span></div>
+        <div class="task-row"><div class="task-icon">入</div><div><div class="task-title">旧手机归档索引</div><div class="task-meta">已完成 62%</div></div><span class="chip blue">进行中</span></div>
+        <div class="task-row"><div class="task-icon">恢</div><div><div class="task-title">恢复到工作微信</div><div class="task-meta">等待冲突处理</div></div><span class="chip red">需处理</span></div>
+      </div>
+    </div>
+    <div class="toast" id="toast">已更新</div>
+  </div>
+</div>
+
+<script>
+const root=document.documentElement;
+const navButtons=[...document.querySelectorAll('.nav-btn')];
+const pages=[...document.querySelectorAll('.page')];
+const toast=document.getElementById('toast');
+let toastTimer;
+
+function showToast(text){
+  toast.textContent=text;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),1800);
+}
+
+function showView(view){
+  navButtons.forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));
+  pages.forEach(page=>page.classList.toggle('active',page.id==='page-'+view));
+  document.getElementById('queue').classList.remove('open');
+}
+
+navButtons.forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.view)));
+document.querySelectorAll('[data-view-jump]').forEach(btn=>{
+  btn.addEventListener('click',()=>showView(btn.dataset.viewJump));
+});
+
+function applyTheme(theme){
+  root.dataset.theme=theme;
+  localStorage.setItem('wechat-backup-theme',theme);
+  document.getElementById('themeLabel').textContent=theme==='dark'?'浅色模式':'暗黑模式';
+}
+const savedTheme=localStorage.getItem('wechat-backup-theme');
+applyTheme(savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+
+document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
+document.getElementById('settingsThemeBtn').addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
+
+document.querySelectorAll('.account-row').forEach(row=>{
+  row.addEventListener('click',()=>{
+    document.querySelectorAll('.account-row').forEach(item=>item.classList.remove('active'));
+    row.classList.add('active');
+    document.getElementById('sideAvatar').textContent=row.dataset.avatar;
+    document.getElementById('sideAccountName').textContent=row.dataset.name;
+    document.getElementById('sideAccountMeta').textContent=row.dataset.meta;
+    document.getElementById('heroAvatar').textContent=row.dataset.avatar;
+    document.getElementById('heroName').textContent=row.dataset.name;
+    document.getElementById('heroId').textContent='微信号 '+row.dataset.meta;
+    document.getElementById('kpiMessages').textContent=row.dataset.messages;
+    document.getElementById('heroChats').textContent=row.dataset.chats;
+    document.getElementById('kpiBackup').textContent=row.dataset.backup;
+    showToast('已切换到 '+row.dataset.name);
+  });
+});
+
+const queue=document.getElementById('queue');
+document.getElementById('queueBtn').addEventListener('click',()=>queue.classList.toggle('open'));
+document.getElementById('closeQueue').addEventListener('click',()=>queue.classList.remove('open'));
+
+function addTask(){
+  const table=document.getElementById('taskTable');
+  const row=document.createElement('tr');
+  row.innerHTML='<td>新建导出任务</td><td>林小满</td><td>导出</td><td><span class="chip blue">排队中</span></td><td>刚刚</td><td><button class="btn flat">详情</button></td>';
+  table.prepend(row);
+  showToast('任务已加入队列');
+}
+document.getElementById('newTaskBtn').addEventListener('click',addTask);
+document.getElementById('startExportBtn').addEventListener('click',addTask);
+document.getElementById('sideStartExportBtn').addEventListener('click',addTask);
+
+const searchableText=Array.from(document.querySelectorAll('h1,h2,h3,.task-title,.list-title,.contact-card strong,.account-name,.account-title')).map(el=>el.textContent).join(' ');
+document.getElementById('globalSearch').addEventListener('input',event=>{
+  const value=event.target.value.trim();
+  const count=value?((searchableText.match(new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length):0;
+  document.getElementById('searchCount').textContent=count;
+  if(value&&count>0) showToast('找到 '+count+' 个匹配项');
+});
+</script>
+</body>
+</html>

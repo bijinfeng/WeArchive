@@ -1,0 +1,43 @@
+{
+  "name": "@we-archive/fnos-native",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/server.js",
+  "scripts": {
+    "dev": "tsx watch backend/server.ts",
+    "dev:frontend": "vite --config vite.frontend.config.ts --host 0.0.0.0 --port 5174",
+    "build": "node scripts/bundle-server.mjs",
+    "build:ui": "vite build --config vite.frontend.config.ts",
+    "build:fnos": "node scripts/build-fnos-package.mjs",
+    "pack:fnos": "pnpm run build:fnos && fnpack build --directory wearchive",
+    "start": "node dist/server.js",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cors": "catalog:server",
+    "@fastify/static": "catalog:server",
+    "@we-archive/core": "workspace:*",
+    "@we-archive/ui-shared": "workspace:*",
+    "better-sqlite3": "catalog:database",
+    "drizzle-orm": "catalog:database",
+    "fastify": "catalog:server"
+  },
+  "devDependencies": {
+    "@astryxdesign/build": "catalog:astryx",
+    "@astryxdesign/core": "catalog:astryx",
+    "@astryxdesign/theme-neutral": "catalog:astryx",
+    "@types/better-sqlite3": "catalog:types",
+    "@types/node": "catalog:types",
+    "@types/react": "catalog:types",
+    "@types/react-dom": "catalog:types",
+    "@vitejs/plugin-react": "catalog:react",
+    "@we-archive/tsconfig": "workspace:*",
+    "esbuild": "catalog:tooling",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "tsx": "catalog:tooling",
+    "typescript": "catalog:types",
+    "vite": "catalog:build"
+  }
+}

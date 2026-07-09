@@ -5,7 +5,10 @@ export interface AppIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export function AppIcon({ size = 32, ...props }: AppIconProps): React.JSX.Element {
+export function AppIcon({
+  size = 32,
+  ...props
+}: AppIconProps): React.JSX.Element {
   return (
     <svg
       width={size}

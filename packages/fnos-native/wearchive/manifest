@@ -1,0 +1,13 @@
+appname=wearchive
+version=0.0.1
+desc=WeArchive desktop UI and backup service
+display_name=WeArchive
+maintainer=WeArchive
+distributor=WeArchive
+platform=all
+desktop_uidir=ui
+desktop_applaunchname=wearchive.main
+source=thirdparty
+install_dep_apps=nodejs_v22
+os_min_version=1.1.3100
+ctl_stop=true
