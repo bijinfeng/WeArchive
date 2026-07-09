@@ -1,6 +1,6 @@
 import { getDatabase, schema } from "@we-archive/core/database";
 import type { Account, DataStats } from "@we-archive/core/types";
-import { ipcMain } from "../electron";
+import { ipcMain } from "electron";
 import { services } from "../services";
 
 /**

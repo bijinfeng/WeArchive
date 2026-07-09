@@ -1,6 +1,6 @@
 import type { TaskProgressEvent } from "@we-archive/core/services";
 import type { BackupTask } from "@we-archive/core/types";
-import { BrowserWindow, ipcMain } from "../electron";
+import { BrowserWindow, ipcMain } from "electron";
 import { services } from "../services";
 
 /**

@@ -1,4 +1,3 @@
-import { createRequire } from "node:module";
 import type { TaskProgressEvent } from "@we-archive/core/services";
 import type {
   Account,
@@ -7,10 +6,7 @@ import type {
   DataStats,
 } from "@we-archive/core/types";
 import type { IpcRendererEvent } from "electron";
-
-const require = createRequire(import.meta.url);
-const { contextBridge, ipcRenderer } =
-  require("electron") as typeof import("electron");
+import { contextBridge, ipcRenderer } from "electron";
 
 // API 接口定义
 export interface ElectronAPI {

@@ -1,4 +1,4 @@
-import { dialog, ipcMain } from "../electron";
+import { dialog, ipcMain } from "electron";
 import { services } from "../services";
 
 /**

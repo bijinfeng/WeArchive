@@ -6,7 +6,7 @@ import {
   SearchService,
   TaskScheduler,
 } from "@we-archive/core";
-import { app } from "../electron";
+import { app } from "electron";
 
 /**
  * 主进程服务容器

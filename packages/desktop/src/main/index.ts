@@ -1,7 +1,7 @@
 import { join } from "node:path";
+import { app, BrowserWindow, shell } from "electron";
 
 import icon from "../../build/icon.png?asset";
-import { app, BrowserWindow, shell } from "./electron";
 import { registerIpcHandlers } from "./ipc";
 import { services } from "./services";
 
