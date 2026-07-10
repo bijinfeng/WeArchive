@@ -10,9 +10,11 @@
     "./components": "./src/components/index.ts",
     "./hooks": "./src/hooks/index.ts",
     "./stores": "./src/stores/index.ts",
+    "./theme": "./src/theme/index.ts",
     "./utils": "./src/utils/index.ts"
   },
   "scripts": {
+    "test": "vitest run",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -26,12 +28,17 @@
     "zustand": "catalog:utils"
   },
   "devDependencies": {
+    "@astryxdesign/build": "catalog:astryx",
+    "@testing-library/react": "catalog:test",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",
     "@we-archive/tsconfig": "workspace:*",
+    "jsdom": "catalog:test",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "typescript": "catalog:types"
+    "typescript": "catalog:types",
+    "vite": "catalog:build",
+    "vitest": "catalog:test"
   },
   "peerDependencies": {
     "react": "catalog:react",

@@ -4,1016 +4,642 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>微信聊天记录备份工具 PRD-2 侧栏分组完整稿</title>
+<title>桌面端微信聊天记录备份</title>
 <style>
 :root{
   color-scheme:light;
-  --bg:#e8edf2;
-  --window:#f7f9fb;
-  --sidebar:#f3f6f8;
-  --surface:#fff;
-  --surface-2:#f1f5f7;
-  --surface-3:#e7edf1;
-  --hover:#dfe8ed;
-  --line:#d7e0e7;
-  --line-2:#c2ced8;
-  --text:#101820;
-  --muted:#61717e;
-  --subtle:#8a98a5;
-  --green:#0b7a46;
-  --green-2:#e7f6ee;
-  --green-3:#bae7cc;
-  --blue:#1f66a8;
-  --blue-2:#e6f0fb;
-  --amber:#93620f;
-  --amber-2:#fff1d2;
-  --red:#b42318;
-  --red-2:#fee4e2;
-  --purple:#6457c6;
-  --purple-2:#eeecff;
-  --shadow:0 26px 80px rgba(24,39,54,.16),0 2px 14px rgba(24,39,54,.08);
+  --bg:linear-gradient(135deg,#e8edf2,#f7f8f9 58%,#e9edf1);
+  --window:#fbfcfd;--titlebar:rgba(250,251,252,.96);--sidebar:#fbfbfc;
+  --surface:#fff;--surface-2:#f7f8fa;--surface-3:#edf1f4;--hover:#e3e8ec;
+  --line:#dde3e8;--line-2:#cbd4dc;--text:#12191f;--muted:#65717c;--subtle:#8d98a3;
+  --green:#07c160;--green-2:#e6f8ee;--green-3:#8be7b5;
+  --blue:#1d64a7;--blue-2:#e8f1fb;--amber:#8a5a13;--amber-2:#fff2d6;--red:#b42318;--red-2:#fee4e2;
+  --shadow:0 24px 70px rgba(20,31,40,.16),0 2px 12px rgba(20,31,40,.08);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 html[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#070b10;
-  --window:#101922;
-  --sidebar:#111a23;
-  --surface:#17222d;
-  --surface-2:#111922;
-  --surface-3:#22303d;
-  --hover:#2a3946;
-  --line:#2d3c49;
-  --line-2:#425362;
-  --text:#eaf1f7;
-  --muted:#a1afbd;
-  --subtle:#748596;
-  --green:#5bd28c;
-  --green-2:#112c1f;
-  --green-3:#256342;
-  --blue:#7cbdff;
-  --blue-2:#102a44;
-  --amber:#f1c45c;
-  --amber-2:#342813;
-  --red:#ff887b;
-  --red-2:#351b1b;
-  --purple:#b0a8ff;
-  --purple-2:#251f48;
-  --shadow:0 26px 80px rgba(0,0,0,.48),0 2px 14px rgba(0,0,0,.34);
+  --bg:linear-gradient(135deg,#070a0e,#111821 58%,#0a0f15);
+  --window:#101821;--titlebar:rgba(16,24,33,.96);--sidebar:#111922;
+  --surface:#17212b;--surface-2:#121922;--surface-3:#22303d;--hover:#2b3946;
+  --line:#2c3946;--line-2:#415160;--text:#e9eff6;--muted:#9aa8b6;--subtle:#738292;
+  --green:#39d978;--green-2:#0b2f1a;--green-3:#1f7a45;
+  --blue:#7cbdff;--blue-2:#102a44;--amber:#f1c45c;--amber-2:#342813;--red:#ff8a7d;--red-2:#351b1b;
+  --shadow:0 24px 70px rgba(0,0,0,.44),0 2px 12px rgba(0,0,0,.34);
 }
 *{box-sizing:border-box}
 html,body{height:100%;min-height:0}
-body{
-  margin:0;
-  font-family:var(--font);
-  color:var(--text);
-  overflow:hidden;
-  letter-spacing:0;
-  background:
-    radial-gradient(circle at 18% 7%,rgba(11,122,70,.11),transparent 28%),
-    radial-gradient(circle at 88% 12%,rgba(31,102,168,.13),transparent 30%),
-    linear-gradient(135deg,var(--bg),#f7f9fb 64%,#e8edf2);
-}
-html[data-theme="dark"] body{
-  background:
-    radial-gradient(circle at 18% 7%,rgba(91,210,140,.12),transparent 28%),
-    radial-gradient(circle at 88% 12%,rgba(124,189,255,.13),transparent 30%),
-    linear-gradient(135deg,#070a0f,#111821 64%,#080c12);
-}
-button,input,select{font:inherit}
+body{margin:0;background:var(--bg);font-family:var(--font);color:var(--text);overflow:hidden;letter-spacing:0}
+button,input{font:inherit}
 button{border:0;cursor:pointer}
-button[disabled]{opacity:.52;cursor:not-allowed}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-mark{background:#fff0a8;color:#101820;border-radius:4px;padding:0 2px}
-html[data-theme="dark"] mark{background:#574615;color:#fff2ad}
-.stage{height:100dvh;min-height:0;padding:22px;display:grid;place-items:center;overflow:hidden}
-.window{
-  width:min(1480px,calc(100vw - 44px));
-  height:min(920px,calc(100dvh - 44px));
-  min-height:min(720px,calc(100dvh - 44px));
-  display:grid;
-  grid-template-columns:268px minmax(0,1fr);
-  background:var(--window);
-  border:1px solid rgba(126,143,158,.48);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
+button:focus-visible,input:focus-visible{outline:2px solid #8be7b5;outline-offset:2px}
+button[disabled]{cursor:not-allowed;opacity:.52}
+svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+mark{background:#fff1a6;color:#12191f;border-radius:4px;padding:0 2px}
+html[data-theme="dark"] mark{background:#5b4713;color:#fff3b0}
+.icon-defs{position:absolute;width:0;height:0;overflow:hidden}
+.stage{height:100%;padding:22px;display:grid;place-items:center}
+.window{position:relative;width:min(1440px,calc(100vw - 44px));height:min(900px,calc(100vh - 44px));min-height:720px;background:var(--window);border:1px solid rgba(130,145,160,.5);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-rows:54px 1fr}
+.window[data-os="mac"]{border-radius:18px}.window[data-os="win"]{border-radius:10px}
+.titlebar{height:54px;display:grid;grid-template-columns:156px minmax(260px,1fr) auto;align-items:center;gap:12px;padding:0 0 0 14px;background:var(--titlebar);border-bottom:1px solid var(--line);user-select:none}
+.window[data-os="win"] .titlebar{grid-template-columns:190px minmax(260px,1fr) auto;padding-left:12px}
+.title-left{min-width:0;display:flex;align-items:center;gap:12px}
+.mac-traffic{display:flex;gap:8px;flex:0 0 auto}.dot{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.16)}
+.dot.close{background:#ff5f57}.dot.min{background:#febc2e}.dot.max{background:#28c840}
+.win-title{display:none;min-width:0;color:var(--text);font-size:12px;font-weight:720;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.window[data-os="win"] .mac-traffic{display:none}.window[data-os="win"] .win-title{display:block}
+.title-icon-btn{width:30px;height:30px;border-radius:8px;background:transparent;color:var(--muted);display:grid;place-items:center;flex:0 0 auto;transition:.14s}
+.title-icon-btn:hover,.title-icon-btn.active{background:var(--surface-3);color:var(--text)}
+.title-icon-btn:active,.btn:active,.nav-btn:active,.option:active,.chat-item:active,.account-row:active,.task-card:active,.contact-row:active{transform:scale(.98)}
+.title-center{display:flex;align-items:center;gap:10px;min-width:0}
+.search{height:34px;max-width:560px;flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:0 6px 0 10px;color:var(--subtle);transition:.16s}
+.search.has-query{background:var(--surface);border-color:#8be7b5;box-shadow:0 0 0 3px rgba(7,193,96,.08)}
+.search input{width:100%;min-width:0;border:0;background:transparent;outline:0;color:var(--text);font-size:13px}
+.search-count{min-width:52px;height:22px;border-radius:6px;padding:0 7px;display:grid;place-items:center;background:var(--surface-3);color:var(--muted);font-size:11px;font-weight:760;white-space:nowrap}
+.clear-search{width:22px;height:22px;border-radius:6px;background:transparent;color:var(--muted);display:none;place-items:center}
+.search.has-query .clear-search{display:grid}.clear-search:hover{background:var(--surface-3);color:var(--text)}
+.state-chip{height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border-radius:8px;background:var(--green-2);color:var(--green);font-size:12px;font-weight:760;white-space:nowrap}
+.state-chip svg{width:15px;height:15px}.state-chip.hidden{display:none}
+.title-right{height:100%;display:flex;align-items:center;gap:8px}
+.btn{position:relative;height:34px;border-radius:8px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--surface-3);color:var(--text);font-size:13px;font-weight:720;white-space:nowrap;transition:background .14s,transform .08s,box-shadow .14s}
+.btn:hover{background:var(--hover)}.btn.primary{background:var(--green);color:#fff}.btn.primary:hover{background:#06ad56}
+.btn.blue{background:var(--blue-2);color:var(--blue)}.btn.amber{background:var(--amber-2);color:var(--amber)}.btn.danger{background:var(--red-2);color:var(--red)}
+.btn.flat{background:transparent;color:var(--muted)}.btn.flat:hover{background:var(--surface-3);color:var(--text)}
+.icon-btn{width:34px;padding:0;display:grid;place-items:center}
+.os-switch{height:28px;display:flex;align-items:center;gap:2px;padding:2px;background:var(--surface-3);border:1px solid var(--line);border-radius:8px}
+.os-switch button{height:22px;min-width:66px;border-radius:6px;background:transparent;color:var(--muted);font-size:12px;font-weight:760}
+.os-switch button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(20,31,40,.08)}
+.win-controls{height:100%;display:none;margin-left:2px}.window[data-os="win"] .win-controls{display:flex}
+.win-btn{width:46px;height:100%;background:transparent;color:var(--text);display:grid;place-items:center}.win-btn:hover{background:var(--surface-3)}.win-btn.close:hover{background:#d92d20;color:#fff}
+
+.app{min-height:0;display:grid;grid-template-columns:248px minmax(0,1fr);background:var(--window);transition:grid-template-columns .18s ease}
+.app.sidebar-collapsed{grid-template-columns:72px minmax(0,1fr)}
+.sidebar{min-width:0;border-right:1px solid var(--line);background:var(--sidebar);padding:14px;display:grid;grid-template-rows:auto 1fr auto;gap:18px}
+.app.sidebar-collapsed .sidebar{padding:14px 9px}
+.app.sidebar-collapsed .brand-text,.app.sidebar-collapsed .nav-label,.app.sidebar-collapsed .nav-btn .count,.app.sidebar-collapsed .library-main,.app.sidebar-collapsed .nav-group-title,.app.sidebar-collapsed .nav-v1{display:none}
+.app.sidebar-collapsed .brand{justify-content:center}.app.sidebar-collapsed .nav-btn{justify-content:center;padding:0}.app.sidebar-collapsed .nav-btn .count{display:none}
+.brand{min-height:48px;display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:#101820;color:#fff;display:grid;place-items:center;flex:0 0 auto}
+.brand-mark svg{width:20px;height:20px}.brand-text{min-width:0}
+.brand-text strong{display:block;font-size:14px;font-weight:780;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-text span{display:block;margin-top:2px;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav{min-width:0;overflow:auto;padding-right:2px}
+.nav-group-title{margin:18px 8px 8px;font-size:11px;font-weight:780;color:var(--subtle);text-transform:uppercase}.nav-group-title:first-child{margin-top:4px}
+.nav-btn{width:100%;height:40px;border-radius:8px;background:transparent;color:var(--text);display:flex;align-items:center;gap:10px;padding:0 10px;text-align:left;font-size:13px;font-weight:680;transition:.14s;position:relative}
+.nav-btn:hover{background:var(--surface-3)}.nav-btn.active{background:var(--green-2);color:var(--green)}
+.nav-btn .count{margin-left:auto;min-width:20px;height:20px;border-radius:999px;display:grid;place-items:center;background:var(--surface-3);color:var(--muted);font-size:11px;font-weight:760;padding:0 6px}
+.nav-btn.active .count{background:#d8f5e4;color:var(--green)}
+.nav-v1{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 6px;border-radius:999px;background:var(--amber-2);color:var(--amber);font-size:10px;font-weight:780;margin-left:6px}
+.library-status{height:54px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;padding:8px;color:var(--text);text-align:left;width:100%}
+.library-status:hover{border-color:#b8c6cf;background:var(--surface)}
+.library-icon{width:28px;height:28px;border-radius:8px;background:var(--surface-3);display:grid;place-items:center;color:var(--muted);position:relative}
+.health-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px var(--surface);position:absolute;right:-2px;bottom:-2px}
+.health-dot.warn{background:var(--amber)}.health-dot.error{background:var(--red)}
+.library-main{min-width:0}.library-main strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.library-main span{display:block;margin-top:3px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.library-status .chev{color:var(--subtle)}
+
+.main{min-width:0;min-height:0;overflow:hidden;position:relative}
+.page{height:100%;display:grid;grid-template-rows:auto 1fr;min-height:0}
+.page-head{padding:20px 22px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:1px solid rgba(221,227,232,.5)}
+.page-title{min-width:0}.page-title h1{margin:0;font-size:22px;line-height:1.2;font-weight:780}
+.page-title p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+.page-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end}
+.content{min-height:0;overflow:auto;padding:18px 22px 22px}
+.content::-webkit-scrollbar,.chat-list::-webkit-scrollbar,.messages::-webkit-scrollbar,.detail-side::-webkit-scrollbar,.transfer-queue::-webkit-scrollbar,.drawer-body::-webkit-scrollbar,nav::-webkit-scrollbar,.contact-list::-webkit-scrollbar,.contact-cats::-webkit-scrollbar{width:10px;height:10px}
+.content::-webkit-scrollbar-thumb,.chat-list::-webkit-scrollbar-thumb,.messages::-webkit-scrollbar-thumb,.detail-side::-webkit-scrollbar-thumb,.transfer-queue::-webkit-scrollbar-thumb,.drawer-body::-webkit-scrollbar-thumb,nav::-webkit-scrollbar-thumb,.contact-list::-webkit-scrollbar-thumb,.contact-cats::-webkit-scrollbar-thumb{background:var(--line-2);border:2px solid transparent;border-radius:10px;background-clip:content-box}
+.grid{display:grid;gap:14px}.stack{display:grid;gap:12px}.home-stack{display:grid;gap:14px}
+.card{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 0 rgba(17,24,28,.02)}
+.card-head{min-height:46px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px}
+.card-head h2,.card-head h3{margin:0;font-size:13px;font-weight:780}
+.card-body{padding:14px}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:780;white-space:nowrap}
+.badge.green{background:var(--green-2);color:var(--green)}.badge.blue{background:var(--blue-2);color:var(--blue)}.badge.amber{background:var(--amber-2);color:var(--amber)}.badge.red{background:var(--red-2);color:var(--red)}.badge.gray{background:var(--surface-3);color:var(--muted)}
+.progress{height:7px;border-radius:999px;background:var(--surface-3);overflow:hidden;margin-top:7px}
+.progress span{display:block;height:100%;border-radius:999px;background:var(--green);transition:width .25s}.progress.blue span{background:var(--blue)}.progress.amber span{background:var(--amber)}.progress.red span{background:var(--red)}
+.muted{color:var(--muted)}.small{font-size:12px}.strong{font-weight:780}
+.empty{min-height:280px;border:1px dashed var(--line-2);border-radius:8px;background:var(--surface-2);display:grid;place-items:center;text-align:center;padding:28px;color:var(--muted)}
+.empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:6px}.empty .btn{margin-top:14px}
+.notice{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:12px;display:grid;gap:6px;font-size:12px;color:var(--muted);line-height:1.45}
+.notice.green{border-color:#8be7b5;background:#f1fcf6;color:#087d42}.notice.amber{border-color:#efd49b;background:#fff9ea;color:#6e4c19}
+.notice.red{border-color:#f1b5ae;background:#fff7f6;color:#84251d}.notice.blue{border-color:#bad4ed;background:#f4f9ff;color:#244d74}
+html[data-theme="dark"] .notice.green{background:#0b2f1a;color:#8ef0b3;border-color:#1f7a45}
+html[data-theme="dark"] .notice.amber{background:#2e2412;color:#f1d38d;border-color:#5f4a1e}
+html[data-theme="dark"] .notice.red{background:#301717;color:#ffb0a7;border-color:#6a2f2f}
+html[data-theme="dark"] .notice.blue{background:#12263a;color:#a3cbf3;border-color:#284b6f}
+
+.summary-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:18px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(135deg,var(--surface),var(--surface-2))}
+.summary-copy h2{margin:0;font-size:24px;line-height:1.18;font-weight:840}.summary-copy p{margin:8px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+.summary-actions{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.summary-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.summary-pill{height:28px;border-radius:999px;padding:0 10px;display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--muted);font-weight:760}
+
+.account-console{display:grid;grid-template-columns:minmax(0,1fr) 360px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(20,31,40,.06)}
+.identity-panel{padding:22px;display:grid;gap:18px;background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%)}
+.identity-head{display:flex;align-items:center;gap:16px;min-width:0}
+.avatar-hero{width:68px;height:68px;border-radius:16px;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:850;position:relative;flex:0 0 auto;box-shadow:0 12px 26px rgba(18,25,31,.16)}
+.avatar-hero.green,.mini-avatar.green{background:#07c160}.avatar-hero.blue,.mini-avatar.blue{background:#285f98}.avatar-hero.dark,.mini-avatar.dark{background:#2d3742}.avatar-hero.amber,.mini-avatar.amber{background:#9e6717}
+.avatar-hero span{width:13px;height:13px;border-radius:50%;background:#07c160;border:2px solid #fff;position:absolute;right:-2px;bottom:-2px}
+.identity-copy{min-width:0}.eyebrow{font-size:12px;color:var(--green);font-weight:780;margin-bottom:4px}
+.identity-copy h2{margin:0;font-size:30px;line-height:1.08;font-weight:850}
+.identity-copy p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.scope-note{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:start}
+.scope-note b{font-size:12px}.scope-note span{font-size:12px;color:var(--muted);line-height:1.5}
+.metric-strip{border:1px solid var(--line);border-radius:8px;background:var(--surface);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden}
+.metric-strip div{padding:12px;border-right:1px solid var(--line);min-width:0}.metric-strip div:last-child{border-right:0}
+.metric-strip span{font-size:12px;color:var(--muted)}.metric-strip strong{display:block;margin-top:6px;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.identity-actions{display:flex;gap:8px;flex-wrap:wrap}
+.account-rail{border-left:1px solid var(--line);background:var(--surface-2);padding:14px;display:grid;grid-template-rows:auto 1fr auto;gap:12px;min-width:0}
+.rail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rail-head h2{margin:0;font-size:15px;line-height:1.25;font-weight:820}.rail-head p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
+.account-list{display:grid;gap:8px;align-content:start}
+.account-row{width:100%;height:70px;border-radius:9px;background:transparent;color:var(--text);display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px;border:1px solid transparent;text-align:left;transition:.14s;position:relative}
+.account-row:hover{background:var(--surface);border-color:#d5dde4}
+.account-row.active{background:var(--surface);border-color:#bfcbd4;box-shadow:0 1px 3px rgba(20,31,40,.08)}
+.account-row.active:before{content:"";width:3px;height:38px;border-radius:999px;background:var(--green);position:absolute;left:0;top:16px}
+.mini-avatar{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:820;flex:0 0 auto}
+.meta{min-width:0}.meta strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta span{display:block;margin-top:4px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-state{display:grid;justify-items:end;gap:5px}.row-state small{font-size:11px;color:var(--subtle);white-space:nowrap}
+.scan-line{height:38px;border:1px dashed #c7d2da;border-radius:8px;background:var(--surface);color:#40505d;font-size:12px;font-weight:760;display:flex;align-items:center;justify-content:center;gap:7px}
+.scan-line:hover{border-color:#9fb0bd;background:var(--surface)}
+
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kpi{padding:14px}.kpi span{font-size:12px;color:var(--muted)}.kpi strong{display:block;font-size:24px;margin-top:8px}.kpi small{display:inline-flex;margin-top:8px;color:var(--green);font-weight:760}
+.home-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.charts-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px}
+.chart-card{padding:14px}.chart-title{display:flex;align-items:center;justify-content:space-between;gap:8px}.chart-title h3{margin:0;font-size:13px;font-weight:780}.chart-title span{font-size:11px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px;margin-top:14px;padding-top:8px}.bar-col{flex:1;display:grid;gap:8px;justify-items:center}.bar{width:100%;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#8ef0b3,var(--green));min-height:24px;position:relative}.bar small{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted)}.bar-col label{font-size:11px;color:var(--muted)}
+.rank-list{display:grid;gap:10px;margin-top:14px}.rank-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.rank-row .track{height:8px;border-radius:999px;background:var(--surface-3);overflow:hidden}.rank-row .track span{display:block;height:100%;border-radius:999px;background:var(--blue)}.rank-row strong{font-size:12px}.rank-row small{font-size:11px;color:var(--muted)}
+.pie-list{display:grid;gap:10px;margin-top:14px}.pie-row{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:center}.pie-chip{height:22px;border-radius:999px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:760;background:var(--surface-3);color:var(--text)}
+
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.option-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.option{width:100%;min-height:76px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);padding:12px;text-align:left;display:grid;gap:6px;transition:.14s}
+.option:hover{border-color:#aebcc6;background:var(--surface)}.option.active{border-color:#8be7b5;background:#f1fcf6;box-shadow:0 0 0 3px rgba(7,193,96,.08)}
+html[data-theme="dark"] .option.active{background:#153423}
+.option.coming{opacity:.7}.option strong{font-size:13px}.option span{font-size:12px;color:var(--muted);line-height:1.45}
+.stat{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:12px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;margin-top:6px;font-size:16px}
+.mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}.progress-label b{color:var(--text)}
+.file-row{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;text-align:left;color:var(--text)}
+.file-row:hover{background:var(--surface);border-color:#cbd4dc}
+.task-icon{width:36px;height:36px;border-radius:8px;background:var(--blue-2);color:var(--blue);display:grid;place-items:center}.task-icon.green{background:var(--green-2);color:var(--green)}.task-icon.blue{background:var(--blue-2);color:var(--blue)}.task-icon.amber{background:var(--amber-2);color:var(--amber)}.task-icon.red{background:var(--red-2);color:var(--red)}
+
+.chat-layout{display:grid;grid-template-columns:320px minmax(0,1fr) 290px;min-height:650px;overflow:hidden}
+.chat-list{border-right:1px solid var(--line);padding:10px;background:var(--surface-2);overflow:auto;display:grid;align-content:start;gap:8px}
+.filters-card{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px;display:grid;gap:10px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}.filter-pill{height:30px;border-radius:999px;padding:0 10px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;font-weight:760}.filter-pill.active{background:var(--green-2);border-color:#8be7b5;color:var(--green)}
+.filter-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.chat-item{width:100%;min-height:82px;border-radius:8px;background:transparent;display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px;color:var(--text);text-align:left;position:relative;border:1px solid transparent}
+.chat-item:hover,.chat-item.active{background:var(--surface);border-color:var(--line)}
+.chat-item .select-box{display:none;width:19px;height:19px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:#fff;place-items:center}
+.batch-mode .chat-item{grid-template-columns:22px 42px minmax(0,1fr) auto}.batch-mode .chat-item .select-box{display:grid}.chat-item.selected .select-box{background:var(--green);border-color:var(--green)}
+.chat-count{font-size:11px;color:var(--muted);white-space:nowrap}
+.list-top{display:grid;gap:10px}.list-sub{font-size:12px;color:var(--muted)}
+.chat-pane{display:grid;grid-template-rows:auto minmax(0,1fr) 54px;min-width:0;background:var(--surface)}
+.chat-pane-head{border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}.chat-pane-head strong{font-size:14px}.chat-pane-head span{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+.messages{padding:16px;display:grid;gap:12px;align-content:start;overflow:auto;background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%)}.day-label{justify-self:center;height:24px;border-radius:999px;background:var(--surface-3);color:var(--muted);font-size:11px;display:flex;align-items:center;padding:0 10px}
+.msg-row{display:grid;gap:5px;max-width:78%}.msg-row.me{justify-self:end}.msg-row .who{font-size:11px;color:var(--muted)}
+.msg{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface);font-size:13px;line-height:1.55;box-shadow:0 1px 0 rgba(17,24,28,.02)}.msg-row.me .msg{background:var(--green-2);border-color:#8be7b5}
+.attachment{margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;align-items:center;gap:8px;background:var(--surface-2);font-size:12px;color:var(--muted)}
+.chat-tools{border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--surface)}.input-like{height:32px;border:1px solid var(--line);border-radius:8px;flex:1;display:flex;align-items:center;padding:0 10px;color:var(--muted);font-size:13px;background:var(--surface-2)}
+.detail-side{border-left:1px solid var(--line);background:var(--surface);overflow:auto}.detail-side section{padding:14px;border-bottom:1px solid var(--line)}.detail-side h3{margin:0 0 10px;font-size:13px}.kv{display:grid;gap:8px}.kv div{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}.kv b{color:var(--text)}
+.batch-bar{margin-bottom:12px;border:1px solid #bad4ed;background:#f4f9ff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#244d74;font-size:12px}
+
+.contacts-layout{display:grid;grid-template-columns:220px 1fr 300px;min-height:650px;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.contact-cats{border-right:1px solid var(--line);padding:10px;background:var(--surface-2);overflow:auto;display:grid;align-content:start;gap:8px}.contact-cat{height:42px;border-radius:8px;background:transparent;display:flex;align-items:center;justify-content:space-between;padding:0 10px;color:var(--text);text-align:left}.contact-cat.active,.contact-cat:hover{background:var(--surface)}
+.contact-list{padding:10px;overflow:auto;display:grid;gap:8px;align-content:start}.contact-row{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;color:var(--text)}.contact-row.active,.contact-row:hover{border-color:#bfcbd4;background:var(--surface-2)}
+.contact-meta strong{display:block;font-size:13px}.contact-meta span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
+.contact-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.contact-tag{height:20px;border-radius:999px;padding:0 8px;display:inline-flex;align-items:center;background:var(--surface-3);font-size:11px;color:var(--muted)}
+.contact-detail{border-left:1px solid var(--line);padding:14px;overflow:auto;background:var(--surface)}
+
+.task-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.task-stat{padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.task-stat span{font-size:12px;color:var(--muted)}.task-stat strong{display:block;margin-top:8px;font-size:24px}
+.task-board{display:grid;gap:12px}.task-card{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:14px;display:grid;gap:12px}.task-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}.task-title{font-size:15px;font-weight:800}.task-meta-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.task-meta-grid div{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:10px}.task-meta-grid span{display:block;font-size:11px;color:var(--muted)}.task-meta-grid strong{display:block;margin-top:5px;font-size:13px}
+.task-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.task-actions{display:flex;gap:8px;flex-wrap:wrap}.task-note{font-size:12px;color:var(--muted)}
+
+.segment{height:34px;display:flex;gap:2px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--surface-3)}
+.segment button{min-width:76px;border-radius:6px;padding:0 10px;background:transparent;color:var(--muted);font-size:12px;font-weight:760}.segment button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(20,31,40,.08)}
+.transfer-shell{display:grid;gap:14px}
+.transfer-body{display:grid;grid-template-columns:220px minmax(0,1fr) 318px;gap:12px;min-height:610px}.stepper,.work-panel,.preview-panel,.queue-panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+.stepper{padding:10px;align-self:start}.step-btn{width:100%;border-radius:8px;background:transparent;padding:10px;display:grid;grid-template-columns:28px 1fr auto;gap:9px;text-align:left;color:var(--muted);align-items:center}.step-btn.active{background:var(--green-2);color:var(--green)}.step-btn.done{color:#087d42}.step-btn.warn{color:var(--amber)}.step-btn span:first-child{width:28px;height:28px;border-radius:8px;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:780;color:inherit}.step-btn.active span:first-child,.step-btn.done span:first-child{background:#d8f5e4}.step-btn.warn span:first-child{background:#fff0d1}
+.step-btn strong{display:block;font-size:12px;color:inherit}.step-btn small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.work-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.work-head{min-height:58px;border-bottom:1px solid var(--line);padding:12px 14px}.work-head h2{margin:0;font-size:15px}.work-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.work-body{padding:14px;overflow:auto;display:grid;gap:12px}.work-foot{border-top:1px solid var(--line);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.reason{font-size:12px;color:var(--muted);line-height:1.45}
+.preview-panel{padding:14px;align-self:start;display:grid;gap:12px}.preview-panel h3{margin:0;font-size:13px}.preview-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.switch-row{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;color:var(--text)}.switch-row.active{border-color:#8be7b5;background:#f1fcf6}html[data-theme="dark"] .switch-row.active{background:#0b2f1a}.toggle{width:34px;height:20px;border-radius:999px;background:#cbd4dc;position:relative;flex:0 0 auto}.toggle:after{content:"";width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:.14s}.switch-row.active .toggle{background:var(--green)}.switch-row.active .toggle:after{left:16px}
+.key-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.step-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mini-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:12px}.mini-card span{display:block;font-size:11px;color:var(--muted)}.mini-card strong{display:block;margin-top:6px;font-size:14px}
+.queue-panel{padding:14px;display:grid;gap:12px}.transfer-queue{display:grid;gap:10px;max-height:240px;overflow:auto}.queue-row{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}.queue-row .meta strong{font-size:13px}
+.qr-box{aspect-ratio:1;border:1px dashed var(--line-2);border-radius:16px;background:repeating-linear-gradient(45deg,var(--surface-2),var(--surface-2) 10px,var(--surface) 10px,var(--surface) 20px);display:grid;place-items:center;font-size:14px;font-weight:780;color:var(--muted)}
+
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.setting-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-title{font-size:13px;font-weight:780}.setting-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}.select-like{height:34px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 12px;display:inline-flex;align-items:center;color:var(--text);font-size:12px;font-weight:760}
+
+.drawer{position:absolute;top:54px;right:0;width:380px;height:calc(100% - 54px);background:var(--surface);border-left:1px solid var(--line);box-shadow:-18px 0 46px rgba(20,31,40,.14);transform:translateX(105%);transition:.18s;z-index:8;display:grid;grid-template-rows:auto 1fr}.drawer.open{transform:translateX(0)}
+.drawer-head{height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px}.drawer-head h2{margin:0;font-size:15px}.drawer-body{padding:14px;overflow:auto;display:grid;gap:12px}
+.floating-task{position:absolute;right:18px;bottom:18px;z-index:12;width:320px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 12px 34px rgba(20,31,40,.18);padding:12px;display:grid;gap:10px}.floating-task.hidden{display:none}.floating-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.floating-head strong{font-size:13px}.floating-meta{font-size:12px;color:var(--muted)}
+.toast-area{position:absolute;right:18px;top:70px;z-index:12;display:grid;gap:8px}.toast{min-width:260px;max-width:340px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 12px;box-shadow:0 12px 34px rgba(20,31,40,.18);display:flex;gap:9px;align-items:flex-start;font-size:13px}
+
+@media (max-width:1280px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.charts-grid{grid-template-columns:1fr 1fr}.task-meta-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.transfer-body{grid-template-columns:200px minmax(0,1fr)}.preview-panel{grid-column:1/-1}.contacts-layout{grid-template-columns:220px 1fr}.contact-detail{display:none}
 }
-.sidebar{
-  min-width:0;
-  min-height:0;
-  display:grid;
-  grid-template-rows:auto auto minmax(0,1fr) auto;
-  background:var(--sidebar);
-  border-right:1px solid var(--line);
-  overflow:hidden;
+@media (max-width:1080px){
+  .titlebar,.window[data-os="win"] .titlebar{grid-template-columns:128px minmax(160px,1fr) auto}
+  .state-chip{display:none}.account-console{grid-template-columns:1fr}.account-rail{border-left:0;border-top:1px solid var(--line)}
+  .home-grid,.charts-grid,.settings-grid{grid-template-columns:1fr}.task-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.chat-layout{grid-template-columns:300px minmax(0,1fr)}.detail-side{display:none}
 }
-.brand{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
-.brand-name{font-size:17px;font-weight:860;line-height:1.15}
-.brand-sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
-.account-strip{
-  margin-top:14px;
-  padding:10px;
-  border-radius:8px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.avatar{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--green),#31aa69);
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-size:14px;
-  font-weight:900;
-  flex:0 0 auto;
-}
-.avatar.small{width:30px;height:30px;border-radius:10px;font-size:12px}
-.avatar.blue{background:linear-gradient(135deg,var(--blue),#54a5e6)}
-.avatar.amber{background:linear-gradient(135deg,#b26e11,#e9a437)}
-.avatar.purple{background:linear-gradient(135deg,#6457c6,#9d8cff)}
-.account-text{min-width:0}
-.account-name{font-size:13px;font-weight:820;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.account-meta{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.side-search{padding:12px 12px 8px}
-.search-box{
-  height:36px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:0 10px;
-}
-.search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:13px}
-.search-count{font-size:11px;color:var(--muted);background:var(--surface-3);border-radius:6px;padding:3px 6px;white-space:nowrap}
-.nav{padding:8px 10px 12px;overflow:auto}
-.nav::-webkit-scrollbar,.page::-webkit-scrollbar,.messages::-webkit-scrollbar,.scroll-area::-webkit-scrollbar{width:10px;height:10px}
-.nav::-webkit-scrollbar-thumb,.page::-webkit-scrollbar-thumb,.messages::-webkit-scrollbar-thumb,.scroll-area::-webkit-scrollbar-thumb{
-  background:var(--line-2);
-  border:2px solid transparent;
-  border-radius:10px;
-  background-clip:content-box;
-}
-.nav-group{
-  padding:8px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:rgba(255,255,255,.46);
-  margin-bottom:10px;
-}
-html[data-theme="dark"] .nav-group{background:rgba(255,255,255,.025)}
-.nav-group-title{padding:2px 4px 8px;font-size:11px;font-weight:860;color:var(--subtle);letter-spacing:.02em}
-.nav-btn{
-  width:100%;
-  height:38px;
-  border-radius:8px;
-  padding:0 10px;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  background:transparent;
-  color:var(--muted);
-  font-size:13px;
-  font-weight:760;
-  text-align:left;
-  transition:.15s;
-}
-.nav-btn:hover{background:var(--hover);color:var(--text)}
-.nav-btn.active{background:var(--green-2);color:var(--green)}
-.nav-symbol{
-  width:22px;
-  height:22px;
-  border-radius:7px;
-  display:grid;
-  place-items:center;
-  flex:0 0 auto;
-  font-size:11px;
-  font-weight:900;
-  background:var(--surface-3);
-  color:var(--muted);
-}
-.nav-btn.active .nav-symbol{background:var(--green);color:#fff}
-.nav-label{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-badge{
-  margin-left:auto;
-  min-width:20px;
-  height:20px;
-  border-radius:999px;
-  padding:0 6px;
-  display:grid;
-  place-items:center;
-  font-size:11px;
-  font-weight:800;
-  background:var(--surface-3);
-  color:var(--muted);
-}
-.nav-btn.active .nav-badge{background:var(--green-3);color:var(--green)}
-.side-footer{padding:12px;border-top:1px solid var(--line);display:grid;gap:10px}
-.theme-toggle{
-  height:38px;
-  border-radius:8px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  color:var(--text);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 10px;
-  font-size:13px;
-  font-weight:780;
-}
-.toggle-track{width:38px;height:22px;border-radius:999px;background:var(--surface-3);position:relative;transition:.16s}
-.toggle-dot{width:18px;height:18px;border-radius:50%;background:var(--surface);position:absolute;left:2px;top:2px;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:.16s}
-html[data-theme="dark"] .toggle-track{background:var(--green-3)}
-html[data-theme="dark"] .toggle-dot{left:18px}
-.storage-line{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}
-.progress{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden}
-.progress span{display:block;height:100%;width:64%;border-radius:inherit;background:var(--green)}
-.main{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);overflow:hidden}
-#content{min-height:0;overflow:hidden}
-.page{
-  height:100%;
-  min-height:0;
-  overflow:auto;
-  padding:26px;
-  display:none;
-}
-.page.active{display:block}
-.page-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-  margin-bottom:18px;
-}
-.eyebrow{font-size:12px;font-weight:850;color:var(--green);margin-bottom:7px}
-h1{font-size:24px;line-height:1.16;margin:0;font-weight:880;letter-spacing:0}
-h2{font-size:16px;margin:0;font-weight:850}
-h3{font-size:14px;margin:0;font-weight:840}
-.page-desc{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.6;max-width:760px}
-.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.btn{
-  height:34px;
-  border-radius:8px;
-  padding:0 12px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  background:var(--surface-3);
-  color:var(--text);
-  font-size:13px;
-  font-weight:780;
-  white-space:nowrap;
-  transition:.15s;
-}
-.btn:hover{background:var(--hover)}
-.btn.primary{background:var(--green);color:#fff}
-.btn.primary:hover{filter:brightness(.94)}
-.btn.blue{background:var(--blue-2);color:var(--blue)}
-.btn.danger{background:var(--red-2);color:var(--red)}
-.btn.flat{background:transparent;color:var(--muted)}
-.btn.flat:hover{background:var(--surface-3);color:var(--text)}
-.chip{
-  height:26px;
-  border-radius:999px;
-  padding:0 9px;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:12px;
-  font-weight:760;
-  background:var(--surface-3);
-  color:var(--muted);
-}
-.chip.green{background:var(--green-2);color:var(--green)}
-.chip.blue{background:var(--blue-2);color:var(--blue)}
-.chip.amber{background:var(--amber-2);color:var(--amber)}
-.chip.red{background:var(--red-2);color:var(--red)}
-.dot-state{width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 auto}
-.panel{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:8px;
-}
-.panel-head{
-  min-height:48px;
-  padding:14px 16px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.panel-body{padding:16px}
-.grid{display:grid;gap:14px}
-.home-grid{grid-template-columns:minmax(0,1.5fr) minmax(320px,.9fr);align-items:start}
-.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-.kpi{
-  padding:15px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:8px;
-}
-.kpi-label{font-size:12px;color:var(--muted);font-weight:760}
-.kpi-value{font-size:25px;font-weight:900;margin-top:8px;line-height:1}
-.kpi-foot{font-size:12px;color:var(--subtle);margin-top:8px}
-.account-hero{
-  background:linear-gradient(135deg,var(--surface),var(--surface-2));
-  border:1px solid var(--line);
-  border-radius:8px;
-  overflow:hidden;
-}
-.account-hero-top{
-  padding:20px;
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:14px;
-  align-items:center;
-  border-bottom:1px solid var(--line);
-}
-.account-large{
-  width:58px;
-  height:58px;
-  border-radius:16px;
-  background:linear-gradient(135deg,var(--green),#36ad6f);
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-size:20px;
-  font-weight:950;
-}
-.account-title{font-size:19px;font-weight:900}
-.account-id{font-size:13px;color:var(--muted);margin-top:4px}
-.account-hero-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:0}
-.account-stat{padding:15px 18px;border-right:1px solid var(--line)}
-.account-stat:last-child{border-right:0}
-.stat-label{font-size:12px;color:var(--muted);font-weight:760}
-.stat-value{font-size:16px;font-weight:880;margin-top:6px}
-.account-list{display:grid;gap:8px}
-.account-row{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-  padding:10px;
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:10px;
-  align-items:center;
-  text-align:left;
-  color:var(--text);
-  transition:.15s;
-}
-.account-row:hover{background:var(--surface-2)}
-.account-row.active{border-color:var(--green);box-shadow:0 0 0 3px rgba(11,122,70,.08)}
-.account-row strong{font-size:13px}
-.account-row span{display:block;font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.timeline{display:grid;gap:10px}
-.task-row{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:12px;
-  align-items:center;
-  padding:12px 0;
-  border-bottom:1px solid var(--line);
-}
-.task-row:last-child{border-bottom:0}
-.task-icon{
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  display:grid;
-  place-items:center;
-  background:var(--green-2);
-  color:var(--green);
-  font-weight:900;
-  font-size:12px;
-}
-.task-title{font-size:13px;font-weight:820}
-.task-meta{font-size:12px;color:var(--muted);margin-top:4px}
-.task-right{text-align:right}
-.layout-3{
-  height:100%;
-  min-height:590px;
-  display:grid;
-  grid-template-columns:280px minmax(0,1fr) 300px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  overflow:hidden;
-  background:var(--surface);
-}
-.column{min-width:0;min-height:0;border-right:1px solid var(--line);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
-.column:last-child{border-right:0}
-.column-head{padding:12px;border-bottom:1px solid var(--line);display:grid;gap:10px}
-.list{overflow:auto}
-.list-item{
-  width:100%;
-  padding:12px;
-  border-bottom:1px solid var(--line);
-  background:transparent;
-  color:var(--text);
-  text-align:left;
-  display:grid;
-  gap:5px;
-}
-.list-item:hover,.list-item.active{background:var(--surface-2)}
-.list-title{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:820}
-.list-meta{font-size:12px;color:var(--muted);line-height:1.45}
-.messages{overflow:auto;padding:18px;display:grid;gap:14px;align-content:start;background:var(--surface-2)}
-.msg{max-width:74%;display:grid;gap:5px}
-.msg.me{margin-left:auto}
-.msg-bubble{
-  border:1px solid var(--line);
-  background:var(--surface);
-  border-radius:8px;
-  padding:10px 12px;
-  font-size:13px;
-  line-height:1.55;
-}
-.msg.me .msg-bubble{background:var(--green-2);border-color:var(--green-3)}
-.msg-time{font-size:11px;color:var(--subtle)}
-.detail-pane{padding:14px;overflow:auto}
-.detail-section{padding:12px 0;border-bottom:1px solid var(--line)}
-.detail-section:last-child{border-bottom:0}
-.key-value{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin-top:8px;color:var(--muted)}
-.key-value strong{color:var(--text)}
-.table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.table th,.table td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
-.table th{font-size:12px;color:var(--muted);font-weight:820;background:var(--surface-2)}
-.table tr:last-child td{border-bottom:0}
-.flow-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:14px;align-items:start}
-.step-list{display:grid;gap:10px}
-.step{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:12px;
-  align-items:center;
-  padding:13px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-}
-.step-number{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:var(--surface-3);
-  color:var(--muted);
-  font-size:12px;
-  font-weight:900;
-}
-.step.done .step-number{background:var(--green);color:#fff}
-.step.active{border-color:var(--green)}
-.step-title{font-size:13px;font-weight:850}
-.step-desc{font-size:12px;color:var(--muted);margin-top:3px}
-.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.option{
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-  padding:14px;
-  color:var(--text);
-  text-align:left;
-}
-.option:hover,.option.active{border-color:var(--green);background:var(--green-2)}
-.option strong{display:block;font-size:14px}
-.option span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
-.contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.contact-card{
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-  padding:13px;
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr);
-  gap:10px;
-  align-items:center;
-}
-.contact-card strong{font-size:13px}
-.contact-card span{display:block;font-size:12px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.settings-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
-.setting-row:last-child{border-bottom:0}
-.setting-title{font-size:13px;font-weight:820}
-.setting-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
-.select{
-  height:34px;
-  min-width:150px;
-  border-radius:8px;
-  border:1px solid var(--line);
-  background:var(--surface);
-  color:var(--text);
-  padding:0 10px;
-}
-.queue{
-  position:absolute;
-  right:42px;
-  bottom:38px;
-  width:360px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:8px;
-  box-shadow:0 16px 44px rgba(16,24,32,.16);
-  overflow:hidden;
-  display:none;
-  z-index:20;
-}
-.queue.open{display:block}
-.queue .task-row{padding:12px 14px}
-.toast{
-  position:absolute;
-  left:50%;
-  bottom:34px;
-  transform:translateX(-50%) translateY(16px);
-  opacity:0;
-  pointer-events:none;
-  background:var(--text);
-  color:var(--surface);
-  border-radius:8px;
-  padding:10px 13px;
-  font-size:13px;
-  font-weight:760;
-  transition:.18s;
-  z-index:30;
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.empty{
-  border:1px dashed var(--line-2);
-  border-radius:8px;
-  padding:22px;
-  color:var(--muted);
-  font-size:13px;
-  text-align:center;
-  background:var(--surface-2);
-}
-@media (max-width:1100px){
-  .window{grid-template-columns:238px minmax(0,1fr)}
-  .home-grid,.flow-grid,.settings-grid{grid-template-columns:1fr}
-  .kpi-grid,.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .layout-3{grid-template-columns:240px minmax(0,1fr)}
-  .layout-3 .column:last-child{display:none}
-}
-@media (max-width:760px){
-  .stage{padding:0}
-  .window{width:100vw;height:100dvh;min-height:0;border-radius:0;grid-template-columns:1fr}
-  .sidebar{display:none}
-  .page{padding:18px}
-  .kpi-grid,.contact-grid,.option-grid{grid-template-columns:1fr}
-  .account-hero-top{grid-template-columns:auto minmax(0,1fr)}
-  .account-hero-top .actions{grid-column:1/-1;justify-content:flex-start}
-  .account-hero-bottom{grid-template-columns:1fr}
-  .account-stat{border-right:0;border-bottom:1px solid var(--line)}
-  .account-stat:last-child{border-bottom:0}
-  .layout-3{grid-template-columns:1fr;min-height:620px}
-  .layout-3 .column:first-child{display:none}
+@media (max-width:860px){
+  .stage{padding:0}.window{width:100vw;height:100vh;min-height:0;border-radius:0!important;border:0}.title-right .btn:not(.icon-btn),.os-switch{display:none}
+  .page-head{padding:16px}.content{padding:14px}.metric-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-strip div:nth-child(2){border-right:0}.metric-strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .scope-note{grid-template-columns:1fr}.identity-actions{display:grid}.identity-actions .btn{width:100%}.home-grid,.kpis,.option-grid,.option-grid.three,.mini-stats,.step-metrics,.key-grid{grid-template-columns:1fr}
+  .chat-layout,.contacts-layout,.transfer-body{grid-template-columns:1fr}.chat-list,.contact-cats{display:none}.task-meta-grid{grid-template-columns:1fr}.summary-hero{grid-template-columns:1fr}.summary-actions{justify-content:flex-start}.page-actions{flex:1}
 }
 </style>
 </head>
 <body>
+<svg class="icon-defs" aria-hidden="true">
+  <symbol id="home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3 1.5-5A8 8 0 1 1 21 12Z"/></symbol>
+  <symbol id="task" viewBox="0 0 24 24"><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="m3.5 6 1 1 2-2"/><path d="m3.5 12 1 1 2-2"/><path d="m3.5 18 1 1 2-2"/></symbol>
+  <symbol id="transfer" viewBox="0 0 24 24"><path d="M7 7h11l-3-3"/><path d="M18 7l-3 3"/><path d="M17 17H6l3 3"/><path d="M6 17l3-3"/></symbol>
+  <symbol id="restore" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8"/><path d="M4 4v4h4"/><path d="M12 8v5l3 2"/></symbol>
+  <symbol id="settings" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1A1.6 1.6 0 0 0 10 3.2V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 1 1.5h.1a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.1a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></symbol>
+  <symbol id="folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="x" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></symbol>
+  <symbol id="refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6Z"/></symbol>
+  <symbol id="chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="user" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18.4A2 2 0 0 0 3.6 21h16.8a2 2 0 0 0 1.8-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+</svg>
 <div class="stage">
-  <div class="window">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-name">微信聊天记录备份</div>
-        <div class="brand-sub">本机加密存储 · 多账号管理 · 可恢复到微信</div>
-        <div class="account-strip">
-          <div class="avatar" id="sideAvatar">林</div>
-          <div class="account-text">
-            <div class="account-name" id="sideAccountName">林小满</div>
-            <div class="account-meta" id="sideAccountMeta">wx_lin_2026 · 已连接</div>
-          </div>
-        </div>
+  <div class="window" id="windowFrame" data-os="mac">
+    <header class="titlebar">
+      <div class="title-left">
+        <div class="mac-traffic"><span class="dot close"></span><span class="dot min"></span><span class="dot max"></span></div>
+        <span class="win-title">WeArchive 微信聊天记录备份</span>
+        <button class="title-icon-btn" data-action="toggle-sidebar" aria-label="折叠侧边栏"><svg><use href="#menu"></use></svg></button>
       </div>
-
-      <div class="side-search">
-        <label class="search-box">
-          <span style="color:var(--subtle);font-weight:900;font-size:13px">搜</span>
-          <input id="globalSearch" placeholder="搜索聊天、联系人、任务" aria-label="搜索聊天、联系人、任务">
-          <span class="search-count" id="searchCount">0</span>
-        </label>
+      <div class="title-center">
+        <label class="search" id="searchBox"><svg><use href="#search"></use></svg><input id="globalSearch" placeholder="搜索账号、任务或异常"><span class="search-count" id="searchCount">全部</span><button class="clear-search" data-action="clear-search" aria-label="清空"><svg><use href="#x"></use></svg></button></label>
+        <span class="state-chip hidden" id="titleStateChip"><svg><use href="#shield"></use></svg><span id="titleStateText"></span></span>
       </div>
-
-      <nav class="nav" aria-label="主导航">
-        <div class="nav-group">
-          <div class="nav-group-title">总览</div>
-          <button class="nav-btn active" data-view="home"><span class="nav-symbol">总</span><span class="nav-label">首页总览</span></button>
+      <div class="title-right">
+        <div class="os-switch"><button class="active" data-action="set-os" data-os="mac">macOS</button><button data-action="set-os" data-os="win">Windows</button></div>
+        <button class="btn primary" data-action="new-backup"><svg><use href="#plus"></use></svg>立即备份</button>
+        <div class="win-controls"><button class="win-btn">—</button><button class="win-btn">□</button><button class="win-btn close">×</button></div>
+      </div>
+    </header>
+    <div class="app" id="appShell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark"><svg><use href="#shield"></use></svg></div>
+          <div class="brand-text"><strong>WeArchive</strong><span>微信聊天记录备份</span></div>
         </div>
-        <div class="nav-group">
+        <nav>
+          <div class="nav-group-title">概览</div>
+          <button class="nav-btn active" data-view="home"><svg><use href="#home"></use></svg><span class="nav-label">首页</span></button>
           <div class="nav-group-title">数据管理</div>
-          <button class="nav-btn" data-view="chats"><span class="nav-symbol">聊</span><span class="nav-label">聊天记录</span><span class="nav-badge">12</span></button>
-          <button class="nav-btn" data-view="contacts"><span class="nav-symbol">联</span><span class="nav-label">联系人</span></button>
-          <button class="nav-btn" data-view="tasks"><span class="nav-symbol">备</span><span class="nav-label">备份任务</span><span class="nav-badge">3</span></button>
-        </div>
-        <div class="nav-group">
-          <div class="nav-group-title">连接与恢复</div>
-          <button class="nav-btn" data-view="transfer"><span class="nav-symbol">导</span><span class="nav-label">导入导出</span></button>
-          <button class="nav-btn" data-view="restore"><span class="nav-symbol">恢</span><span class="nav-label">恢复到微信</span></button>
-          <button class="nav-btn" data-view="connect"><span class="nav-symbol">连</span><span class="nav-label">连接微信备份</span></button>
-        </div>
-        <div class="nav-group">
+          <button class="nav-btn" data-view="chats"><svg><use href="#chat"></use></svg><span class="nav-label">聊天记录</span><span class="count" id="chatCountBadge">24</span></button>
+          <button class="nav-btn" data-view="contacts"><svg><use href="#user"></use></svg><span class="nav-label">联系人 <span class="nav-v1">V1</span></span><span class="count">86</span></button>
+          <div class="nav-group-title">备份与迁移</div>
+          <button class="nav-btn" data-view="tasks"><svg><use href="#task"></use></svg><span class="nav-label">备份任务</span><span class="count" id="taskCountBadge">3</span></button>
+          <button class="nav-btn" data-view="transfer"><svg><use href="#transfer"></use></svg><span class="nav-label">导入导出</span></button>
+          <button class="nav-btn" data-view="restore"><svg><use href="#restore"></use></svg><span class="nav-label">恢复到微信 <span class="nav-v1">V1</span></span></button>
           <div class="nav-group-title">系统</div>
-          <button class="nav-btn" data-view="settings"><span class="nav-symbol">设</span><span class="nav-label">设置</span></button>
-        </div>
-      </nav>
-
-      <div class="side-footer">
-        <button class="theme-toggle" id="themeToggle" type="button">
-          <span id="themeLabel">暗黑模式</span>
-          <span class="toggle-track"><span class="toggle-dot"></span></span>
+          <button class="nav-btn" data-view="settings"><svg><use href="#settings"></use></svg><span class="nav-label">设置</span></button>
+        </nav>
+        <button class="library-status" data-action="open-drawer" data-drawer="library">
+          <span class="library-icon"><svg><use href="#folder"></use></svg><i class="health-dot"></i></span>
+          <span class="library-main"><strong>当前备份位置</strong><span>主力账号备份 · 128.6GB · 正常</span></span>
+          <svg class="chev"><use href="#chevron"></use></svg>
         </button>
-        <div class="storage-line"><span>本机库</span><strong>64%</strong></div>
-        <div class="progress"><span></span></div>
-      </div>
-    </aside>
-
-    <main class="main">
-      <div id="content">
-        <section class="page active" id="page-home">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">当前工作区</div>
-              <h1>首页总览</h1>
-              <p class="page-desc">当前账号、最近备份、数据规模和风险状态集中在首页，进入后先确认操作对象。</p>
-            </div>
-            <div class="actions">
-              <button class="btn blue" id="queueBtn">任务队列</button>
-              <button class="btn primary" data-view-jump="transfer">导入导出</button>
-            </div>
-          </div>
-
-          <div class="grid kpi-grid">
-            <div class="kpi"><div class="kpi-label">已备份消息</div><div class="kpi-value" id="kpiMessages">186,420</div><div class="kpi-foot">覆盖 36 个会话</div></div>
-            <div class="kpi"><div class="kpi-label">附件体积</div><div class="kpi-value">42.8GB</div><div class="kpi-foot">图片、视频、文件</div></div>
-            <div class="kpi"><div class="kpi-label">最近备份</div><div class="kpi-value" id="kpiBackup">09:42</div><div class="kpi-foot">今天自动完成</div></div>
-            <div class="kpi"><div class="kpi-label">待处理任务</div><div class="kpi-value">3</div><div class="kpi-foot">1 个需要确认</div></div>
-          </div>
-
-          <div class="grid home-grid" style="margin-top:14px">
-            <div class="grid">
-              <div class="account-hero">
-                <div class="account-hero-top">
-                  <div class="account-large" id="heroAvatar">林</div>
-                  <div>
-                    <div class="account-title" id="heroName">林小满</div>
-                    <div class="account-id" id="heroId">微信号 wx_lin_2026 · iPhone 15 Pro · 已连接</div>
-                  </div>
-                  <div class="actions">
-                    <span class="chip green"><span class="dot-state"></span>备份正常</span>
-                    <button class="btn" data-view-jump="chats">查看记录</button>
-                  </div>
-                </div>
-                <div class="account-hero-bottom">
-                  <div class="account-stat"><div class="stat-label">聊天记录</div><div class="stat-value" id="heroChats">36 个会话</div></div>
-                  <div class="account-stat"><div class="stat-label">时间范围</div><div class="stat-value">2021.03 - 今天</div></div>
-                  <div class="account-stat"><div class="stat-label">加密状态</div><div class="stat-value">本机密钥保护</div></div>
-                </div>
-              </div>
-
-              <div class="panel">
-                <div class="panel-head"><h2>最近活动</h2><span class="chip green">自动同步开启</span></div>
-                <div class="panel-body timeline">
-                  <div class="task-row"><div class="task-icon">成</div><div><div class="task-title">林小满的图片附件增量备份完成</div><div class="task-meta">处理 1,284 个文件 · 用时 3 分 12 秒</div></div><div class="task-right"><span class="chip green">完成</span></div></div>
-                  <div class="task-row"><div class="task-icon">待</div><div><div class="task-title">家庭群导出为 HTML</div><div class="task-meta">等待选择导出位置</div></div><div class="task-right"><span class="chip amber">待确认</span></div></div>
-                  <div class="task-row"><div class="task-icon">险</div><div><div class="task-title">检测到旧版备份库</div><div class="task-meta">可迁移为新版索引，原始文件保持不变</div></div><div class="task-right"><button class="btn blue">查看</button></div></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-head">
-                <h2>微信账号列表</h2>
-                <button class="btn flat">重新扫描</button>
-              </div>
-              <div class="panel-body account-list">
-                <button class="account-row active" data-account="lin" data-name="林小满" data-meta="wx_lin_2026 · 已连接" data-avatar="林" data-messages="186,420" data-chats="36 个会话" data-backup="09:42">
-                  <div class="avatar small">林</div><div><strong>林小满</strong><span>wx_lin_2026 · 今天 09:42</span></div><span class="chip green">当前</span>
-                </button>
-                <button class="account-row" data-account="work" data-name="工作微信" data-meta="wx_workdesk · 待备份" data-avatar="工" data-messages="92,618" data-chats="21 个会话" data-backup="昨天">
-                  <div class="avatar small blue">工</div><div><strong>工作微信</strong><span>wx_workdesk · 昨天 18:30</span></div><span class="chip amber">待备份</span>
-                </button>
-                <button class="account-row" data-account="family" data-name="家庭账号" data-meta="wx_familyhub · 离线" data-avatar="家" data-messages="58,093" data-chats="14 个会话" data-backup="周二">
-                  <div class="avatar small amber">家</div><div><strong>家庭账号</strong><span>wx_familyhub · 设备离线</span></div><span class="chip">离线</span>
-                </button>
-                <button class="account-row" data-account="archive" data-name="旧手机归档" data-meta="wx_archive2023 · 只读" data-avatar="旧" data-messages="231,006" data-chats="48 个会话" data-backup="6月28日">
-                  <div class="avatar small purple">旧</div><div><strong>旧手机归档</strong><span>wx_archive2023 · 只读备份</span></div><span class="chip blue">归档</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page" id="page-chats">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">数据管理</div>
-              <h1>聊天记录</h1>
-              <p class="page-desc">三栏阅读结构：左侧会话，中间消息流，右侧会话属性与可导出范围。</p>
-            </div>
-            <div class="actions"><button class="btn">选择模式</button><button class="btn primary" data-view-jump="transfer">导出选中</button></div>
-          </div>
-          <div class="layout-3">
-            <div class="column">
-              <div class="column-head">
-                <label class="search-box"><input placeholder="搜索会话" aria-label="搜索会话"><span class="search-count">12</span></label>
-              </div>
-              <div class="list scroll-area">
-                <button class="list-item active"><div class="list-title"><strong>项目推进群</strong><span>09:18</span></div><div class="list-meta">王然：今晚先确认导出格式...</div></button>
-                <button class="list-item"><div class="list-title"><strong>家庭群</strong><span>昨天</span></div><div class="list-meta">妈妈：照片我已经收到了</div></button>
-                <button class="list-item"><div class="list-title"><strong>陈晓</strong><span>周二</span></div><div class="list-meta">语音 00:18 · 2 个附件</div></button>
-                <button class="list-item"><div class="list-title"><strong>文件传输助手</strong><span>7月4日</span></div><div class="list-meta">季度报告-final.pdf</div></button>
-                <button class="list-item"><div class="list-title"><strong>旅行计划</strong><span>6月30日</span></div><div class="list-meta">酒店订单和航班截图</div></button>
-              </div>
-            </div>
-            <div class="column">
-              <div class="column-head">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-                  <div><h2>项目推进群</h2><div class="list-meta">18 位成员 · 2023.01 - 今天</div></div>
-                  <span class="chip green">已索引</span>
-                </div>
-              </div>
-              <div class="messages">
-                <div class="msg"><div class="msg-time">09:12 王然</div><div class="msg-bubble">今天先把 PRD 里的恢复流程补完整，导出格式保留 HTML、PDF、CSV 三种。</div></div>
-                <div class="msg me"><div class="msg-time">09:14 我</div><div class="msg-bubble">可以，恢复到微信要单独做风险确认，避免用户误覆盖。</div></div>
-                <div class="msg"><div class="msg-time">09:18 刘佳</div><div class="msg-bubble">附件里有一份旧库样例，我放到共享目录了。</div></div>
-                <div class="msg me"><div class="msg-time">09:20 我</div><div class="msg-bubble">收到，我会先跑只读扫描，再生成迁移报告。</div></div>
-              </div>
-            </div>
-            <div class="detail-pane">
-              <div class="detail-section"><h3>会话信息</h3><div class="key-value"><span>消息数</span><strong>18,642</strong></div><div class="key-value"><span>附件</span><strong>2.4GB</strong></div><div class="key-value"><span>成员</span><strong>18</strong></div></div>
-              <div class="detail-section"><h3>导出范围</h3><div class="key-value"><span>默认格式</span><strong>HTML</strong></div><div class="key-value"><span>时间范围</span><strong>全部</strong></div><div class="key-value"><span>包含附件</span><strong>是</strong></div></div>
-              <div class="detail-section"><button class="btn primary" style="width:100%" data-view-jump="transfer">创建导出任务</button></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page" id="page-contacts">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">数据管理</div>
-              <h1>联系人</h1>
-              <p class="page-desc">联系人支持按账号、标签、最近聊天和备份状态筛选。</p>
-            </div>
-            <div class="actions"><button class="btn">同步联系人</button><button class="btn primary">导出通讯录</button></div>
-          </div>
-          <div class="grid contact-grid">
-            <div class="contact-card"><div class="avatar small">王</div><div><strong>王然</strong><span>项目推进群 · 12,408 条消息</span></div></div>
-            <div class="contact-card"><div class="avatar small blue">陈</div><div><strong>陈晓</strong><span>单聊 · 2 个待备份附件</span></div></div>
-            <div class="contact-card"><div class="avatar small amber">妈</div><div><strong>妈妈</strong><span>家庭群 · 最近备份 今天</span></div></div>
-            <div class="contact-card"><div class="avatar small purple">刘</div><div><strong>刘佳</strong><span>工作联系人 · 已加密</span></div></div>
-            <div class="contact-card"><div class="avatar small">周</div><div><strong>周医生</strong><span>图片 186 张 · 可导出</span></div></div>
-            <div class="contact-card"><div class="avatar small blue">助</div><div><strong>文件传输助手</strong><span>文件 14.2GB · 高占用</span></div></div>
-          </div>
-        </section>
-
-        <section class="page" id="page-tasks">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">数据管理</div>
-              <h1>备份任务</h1>
-              <p class="page-desc">备份、导入、导出、恢复任务统一排队，失败项保留可重试原因。</p>
-            </div>
-            <div class="actions"><button class="btn">暂停全部</button><button class="btn primary" id="newTaskBtn">新增备份</button></div>
-          </div>
-          <table class="table">
-            <thead><tr><th>任务</th><th>账号</th><th>类型</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
-            <tbody id="taskTable">
-              <tr><td>图片附件增量备份</td><td>林小满</td><td>自动备份</td><td><span class="chip green">完成</span></td><td>今天 09:42</td><td><button class="btn flat">详情</button></td></tr>
-              <tr><td>家庭群 HTML 导出</td><td>林小满</td><td>导出</td><td><span class="chip amber">待确认</span></td><td>今天 09:31</td><td><button class="btn blue">继续</button></td></tr>
-              <tr><td>旧手机归档索引</td><td>旧手机归档</td><td>导入</td><td><span class="chip blue">进行中</span></td><td>今天 08:56</td><td><button class="btn flat">暂停</button></td></tr>
-              <tr><td>恢复到工作微信</td><td>工作微信</td><td>恢复</td><td><span class="chip red">需处理</span></td><td>昨天 18:22</td><td><button class="btn danger">处理</button></td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section class="page" id="page-transfer">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">连接与恢复</div>
-              <h1>导入导出</h1>
-              <p class="page-desc">导入和导出使用同一套流程工作台，右侧持续显示范围、风险和任务队列。</p>
-            </div>
-            <div class="actions"><button class="btn">保存草稿</button><button class="btn primary" id="startExportBtn">开始导出</button></div>
-          </div>
-          <div class="flow-grid">
-            <div class="grid">
-              <div class="panel">
-                <div class="panel-head"><h2>选择操作</h2><span class="chip green">当前账号：林小满</span></div>
-                <div class="panel-body">
-                  <div class="option-grid">
-                    <button class="option active"><strong>导出聊天记录</strong><span>将选定会话导出为 HTML、PDF、CSV 或原始归档。</span></button>
-                    <button class="option"><strong>导入备份库</strong><span>扫描旧手机、外置磁盘或微信备份目录。</span></button>
-                    <button class="option"><strong>迁移到新库</strong><span>只读检查旧库，生成兼容索引和迁移报告。</span></button>
-                    <button class="option"><strong>导出联系人</strong><span>按账号、标签或最近会话导出通讯录。</span></button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="panel">
-                <div class="panel-head"><h2>流程</h2><span class="chip blue">4 步</span></div>
-                <div class="panel-body step-list">
-                  <div class="step done"><div class="step-number">1</div><div><div class="step-title">选择数据范围</div><div class="step-desc">项目推进群、家庭群、文件传输助手</div></div><span class="chip green">完成</span></div>
-                  <div class="step active"><div class="step-number">2</div><div><div class="step-title">选择导出格式</div><div class="step-desc">HTML 可离线查看，PDF 适合归档打印</div></div><button class="btn blue">配置</button></div>
-                  <div class="step"><div class="step-number">3</div><div><div class="step-title">确认附件策略</div><div class="step-desc">图片原图、视频压缩、文件保持原名</div></div><span class="chip">待处理</span></div>
-                  <div class="step"><div class="step-number">4</div><div><div class="step-title">生成任务</div><div class="step-desc">加入队列后可在后台执行</div></div><span class="chip">待处理</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-head"><h2>范围与风险</h2><span class="chip amber">需确认</span></div>
-              <div class="panel-body">
-                <div class="detail-section"><h3>导出摘要</h3><div class="key-value"><span>会话</span><strong>3 个</strong></div><div class="key-value"><span>消息</span><strong>31,092 条</strong></div><div class="key-value"><span>附件</span><strong>6.8GB</strong></div></div>
-                <div class="detail-section"><h3>风险提示</h3><p class="page-desc" style="margin:8px 0 0">家庭群中包含 14 个超过 200MB 的视频。导出为 PDF 时会生成附件目录，视频保留为独立文件。</p></div>
-                <div class="detail-section"><button class="btn primary" style="width:100%" id="sideStartExportBtn">加入任务队列</button></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page" id="page-restore">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">连接与恢复</div>
-              <h1>恢复到微信</h1>
-              <p class="page-desc">恢复流程默认只读预检，写入前展示目标账号、冲突和覆盖范围。</p>
-            </div>
-            <div class="actions"><button class="btn">预检</button><button class="btn danger">开始恢复</button></div>
-          </div>
-          <div class="grid home-grid">
-            <div class="panel">
-              <div class="panel-head"><h2>恢复计划</h2><span class="chip red">高风险操作</span></div>
-              <div class="panel-body step-list">
-                <div class="step done"><div class="step-number">1</div><div><div class="step-title">选择备份源</div><div class="step-desc">林小满 · 2026-07-09 09:42</div></div><span class="chip green">完成</span></div>
-                <div class="step active"><div class="step-number">2</div><div><div class="step-title">选择目标微信</div><div class="step-desc">工作微信 · 当前在线</div></div><button class="btn blue">更换</button></div>
-                <div class="step"><div class="step-number">3</div><div><div class="step-title">冲突处理</div><div class="step-desc">检测到 126 条可能重复消息</div></div><span class="chip amber">待确认</span></div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><h2>安全确认</h2></div>
-              <div class="panel-body">
-                <div class="empty">恢复前会创建目标账号快照。未确认覆盖策略前，不会写入微信数据。</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page" id="page-connect">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">连接与恢复</div>
-              <h1>连接微信备份</h1>
-              <p class="page-desc">支持扫描本机微信、外置磁盘、旧手机备份目录和只读归档库。</p>
-            </div>
-            <div class="actions"><button class="btn primary">扫描设备</button></div>
-          </div>
-          <div class="grid home-grid">
-            <div class="panel">
-              <div class="panel-head"><h2>连接来源</h2></div>
-              <div class="panel-body step-list">
-                <div class="step active"><div class="step-number">本</div><div><div class="step-title">本机微信</div><div class="step-desc">检测到 2 个账号，1 个正在运行</div></div><span class="chip green">可用</span></div>
-                <div class="step"><div class="step-number">盘</div><div><div class="step-title">外置磁盘</div><div class="step-desc">未连接</div></div><button class="btn">选择目录</button></div>
-                <div class="step"><div class="step-number">旧</div><div><div class="step-title">旧版备份库</div><div class="step-desc">支持迁移为新版索引</div></div><button class="btn blue">导入</button></div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><h2>连接状态</h2><span class="chip green">正常</span></div>
-              <div class="panel-body">
-                <div class="key-value"><span>运行中的微信</span><strong>林小满</strong></div>
-                <div class="key-value"><span>数据目录</span><strong>已授权</strong></div>
-                <div class="key-value"><span>附件目录</span><strong>可读写</strong></div>
-                <div class="key-value"><span>加密密钥</span><strong>本机钥匙串</strong></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page" id="page-settings">
-          <div class="page-head">
-            <div>
-              <div class="eyebrow">系统</div>
-              <h1>设置</h1>
-              <p class="page-desc">主题、存储、安全、自动备份和导出偏好集中管理。</p>
-            </div>
-          </div>
-          <div class="settings-grid">
-            <div class="panel">
-              <div class="panel-head"><h2>外观与系统</h2></div>
-              <div class="panel-body">
-                <div class="setting-row"><div><div class="setting-title">暗黑模式</div><div class="setting-desc">与侧栏底部开关同步。</div></div><button class="btn" id="settingsThemeBtn">切换</button></div>
-                <div class="setting-row"><div><div class="setting-title">系统外观</div><div class="setting-desc">未手动选择时跟随系统。</div></div><select class="select"><option>跟随系统</option><option>浅色</option><option>深色</option></select></div>
-                <div class="setting-row"><div><div class="setting-title">窗口风格</div><div class="setting-desc">桌面端圆角和阴影。</div></div><select class="select"><option>macOS</option><option>Windows</option></select></div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><h2>备份与安全</h2></div>
-              <div class="panel-body">
-                <div class="setting-row"><div><div class="setting-title">自动备份</div><div class="setting-desc">微信退出后执行增量备份。</div></div><span class="chip green">开启</span></div>
-                <div class="setting-row"><div><div class="setting-title">本机加密</div><div class="setting-desc">密钥保存在系统安全存储。</div></div><span class="chip green">已启用</span></div>
-                <div class="setting-row"><div><div class="setting-title">导出默认格式</div><div class="setting-desc">用于聊天记录批量导出。</div></div><select class="select"><option>HTML</option><option>PDF</option><option>CSV</option></select></div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <div class="queue" id="queue">
-      <div class="panel-head"><h2>任务队列</h2><button class="btn flat" id="closeQueue">关闭</button></div>
-      <div>
-        <div class="task-row"><div class="task-icon">导</div><div><div class="task-title">家庭群 HTML 导出</div><div class="task-meta">等待选择目录</div></div><span class="chip amber">待确认</span></div>
-        <div class="task-row"><div class="task-icon">入</div><div><div class="task-title">旧手机归档索引</div><div class="task-meta">已完成 62%</div></div><span class="chip blue">进行中</span></div>
-        <div class="task-row"><div class="task-icon">恢</div><div><div class="task-title">恢复到工作微信</div><div class="task-meta">等待冲突处理</div></div><span class="chip red">需处理</span></div>
-      </div>
+      </aside>
+      <main class="main" id="main"></main>
+      <aside id="drawer" class="drawer"></aside>
+      <div class="floating-task hidden" id="floatingTask"></div>
+      <div id="toastArea" class="toast-area"></div>
     </div>
-    <div class="toast" id="toast">已更新</div>
   </div>
 </div>
-
 <script>
-const root=document.documentElement;
-const navButtons=[...document.querySelectorAll('.nav-btn')];
-const pages=[...document.querySelectorAll('.page')];
-const toast=document.getElementById('toast');
-let toastTimer;
-
-function showToast(text){
-  toast.textContent=text;
-  toast.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>toast.classList.remove('show'),1800);
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function icon(name){return `<svg aria-hidden="true"><use href="#${name}"></use></svg>`}
+function esc(v){return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function hi(text){
+  const safe = esc(text);
+  if(!state.query) return safe;
+  const q = state.query.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return safe.replace(new RegExp(q,"ig"),m=>`<mark>${m}</mark>`);
 }
-
-function showView(view){
-  navButtons.forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));
-  pages.forEach(page=>page.classList.toggle('active',page.id==='page-'+view));
-  document.getElementById('queue').classList.remove('open');
+function hit(text){return !state.query || String(text).toLowerCase().includes(state.query.toLowerCase())}
+function fmt(n){return typeof n === "number" ? new Intl.NumberFormat("zh-CN").format(n) : n}
+const placeholders = {
+  home:"搜索账号、任务或异常",
+  chats:"搜索联系人、群聊、消息或文件",
+  contacts:"搜索联系人、备注或微信号",
+  tasks:"搜索任务、账号或保存位置",
+  transfer:"搜索导入文件、导出任务",
+  restore:"搜索要恢复的会话或联系人",
+  settings:"搜索设置项"
+};
+const accounts = [
+  {id:"lin",name:"林小满",wechat:"wx_lin_2026",role:"个人微信",desc:"最近一次增量备份已完成",badge:"当前",tone:"green",avatar:"林",sessions:36,messages:2450618,attachments:184200,status:"搜索可用",sync:"今天 13:10",complete:"99.8%",space:"128.6GB",newAdd:"今天新增 2.8 万条",issues:2,device:"iPhone 15 Pro",connected:"已连接"},
+  {id:"biz",name:"企业沟通号",wechat:"biz_wechat_08",role:"工作微信",desc:"搜索目录正在重建",badge:"处理中",tone:"blue",avatar:"企",sessions:18,messages:861240,attachments:72600,status:"目录重建中",sync:"今天 11:42",complete:"97.2%",space:"46.5GB",newAdd:"今天新增 6,200 条",issues:5,device:"Windows 微信",connected:"离线"},
+  {id:"home",name:"家庭账号",wechat:"family_home",role:"个人微信",desc:"上次备份：昨天 22:14",badge:"正常",tone:"amber",avatar:"家",sessions:9,messages:349028,attachments:21000,status:"正常",sync:"昨天 22:14",complete:"100%",space:"9.4GB",newAdd:"昨天新增 1,024 条",issues:0,device:"iPhone 14",connected:"已连接"}
+];
+const charts = {
+  trend:[3200,4100,3600,5800,6200,5400,7100],
+  top:[
+    {name:"项目推进群",value:18642},
+    {name:"家庭群",value:12860},
+    {name:"客户沟通群",value:10428},
+    {name:"文件传输助手",value:8630},
+    {name:"陈晓",value:6224}
+  ],
+  attachments:[
+    {name:"图片",value:"46.2GB",width:46,color:"green"},
+    {name:"视频",value:"31.8GB",width:31,color:"blue"},
+    {name:"文件",value:"18.4GB",width:18,color:"amber"},
+    {name:"语音",value:"6.2GB",width:5,color:"gray"}
+  ]
+};
+const chats = [
+  {id:"c1",name:"项目推进群",type:"群聊",avatar:"项",count:18642,summary:"今晚先确认导出格式，恢复流程单独确认。",risk:"无风险",attachments:true,favorite:true,backup:"正常",updated:"09:18",mediaTypes:["file","image"],dateBucket:"7d",messages:[
+    ["system","2026-07-09","",""],
+    ["王然","今天先把 PRD 里的恢复流程补完整，导出格式保留 HTML 和加密迁移包。","09:12",""],
+    ["我","可以，恢复到微信要单独做风险确认，避免误覆盖。","09:14",""],
+    ["刘佳","附件里有一份旧库样例，我放到共享目录了。","09:18","旧库样例.zip"]
+  ],detail:{members:18,files:"2.4GB",lastBackup:"今天 09:42",complete:"99.4%",risk:"0 个高风险，2 个提醒",notes:"项目群里包含图片、文件和长语音，适合导出为 HTML 归档或迁移包。"}},
+  {id:"c2",name:"家庭群",type:"群聊",avatar:"家",count:12860,summary:"妈妈：照片我已经收到了。",risk:"无风险",attachments:true,favorite:false,backup:"正常",updated:"昨天",mediaTypes:["image","video"],dateBucket:"30d",messages:[
+    ["system","2026-07-08","",""],
+    ["妈妈","照片记得备份一下，换手机的时候别丢了。","20:12",""],
+    ["我","已经设置自动备份了，导出时也会带上图片。","20:16","相册封面.jpg"]
+  ],detail:{members:5,files:"9.4GB",lastBackup:"昨天 22:14",complete:"100%",risk:"无风险",notes:"家庭群主要是图片和视频，适合做完整归档。"}},
+  {id:"c3",name:"客户沟通群",type:"群聊",avatar:"客",count:10428,summary:"合同和对账截图已经发群文件。",risk:"12 个附件未成功保存",attachments:true,favorite:true,backup:"部分完成",updated:"周二",mediaTypes:["file"],dateBucket:"30d",messages:[
+    ["system","2026-07-07","",""],
+    ["李然","这版合同我已经标出变更点，麻烦确认。","10:12","合同_三月归档.pdf"],
+    ["我","收到，我先备份这段沟通记录，下午导出给法务。","10:18","对账截图.zip"]
+  ],detail:{members:12,files:"18.1GB",lastBackup:"7月7日 10:28",complete:"95.3%",risk:"12 个视频附件无法读取",notes:"当前会话存在失败附件，建议先在任务页重试失败项。"}},
+  {id:"c4",name:"文件传输助手",type:"联系人",avatar:"助",count:8630,summary:"季度报告 final 版放这里，后面导出时一起带走。",risk:"有 2 个大文件提醒",attachments:true,favorite:false,backup:"正常",updated:"6月30日",mediaTypes:["file","image"],dateBucket:"all",messages:[
+    ["system","2026-06-30","",""],
+    ["我","季度报告 final 版放这里，后面导出时一起带走。","18:10","季度报告-final.pdf"]
+  ],detail:{members:1,files:"14.2GB",lastBackup:"6月30日 18:20",complete:"95.3%",risk:"2 个超过 500MB 的大文件待检查",notes:"导出前建议确认保存位置空间是否足够。"}},
+  {id:"c5",name:"陈晓",type:"联系人",avatar:"陈",count:6224,summary:"语音 00:18 · 2 个附件",risk:"无风险",attachments:true,favorite:false,backup:"正常",updated:"7月4日",mediaTypes:["voice","file"],dateBucket:"7d",messages:[
+    ["system","2026-07-04","",""],
+    ["陈晓","我把原始素材发你，记得一起归档。","14:04","素材列表.xlsx"],
+    ["我","收到，这次会放进迁移包里。","14:06","语音_001.aac"]
+  ],detail:{members:1,files:"3.8GB",lastBackup:"7月4日 14:20",complete:"99.1%",risk:"无风险",notes:"适合导出成单独的 HTML 归档或迁移包。"}}
+];
+const contacts = [
+  {id:"ct1",name:"王然",avatar:"王",category:"friend",kind:"好友",note:"项目负责人",wechat:"wr_2024",last:"今天 09:18",messages:12408,tags:["重要联系人","最近活跃"],invalid:false,account:"林小满",analysis:"最近 7 天互动上升 32%，主要集中在工作日 9:00-11:00。"},
+  {id:"ct2",name:"陈晓",avatar:"陈",category:"friend",kind:"好友",note:"合同归档",wechat:"cx_file_88",last:"7月4日",messages:6224,tags:["附件较多"],invalid:false,account:"林小满",analysis:"文件型消息占比高，导出时建议保留原文件名。"},
+  {id:"ct3",name:"项目推进群",avatar:"项",category:"group",kind:"群聊",note:"18 位成员",wechat:"group_proj_a",last:"今天 09:18",messages:18642,tags:["群聊","高频互动"],invalid:false,account:"林小满",analysis:"近 30 天是最活跃会话，适合单独归档。"},
+  {id:"ct4",name:"家庭群",avatar:"家",category:"group",kind:"群聊",note:"家人共享相册",wechat:"group_family_1",last:"昨天 20:16",messages:12860,tags:["群聊","图片较多"],invalid:false,account:"家庭账号",analysis:"图片和视频占比高，建议定期做完整备份。"},
+  {id:"ct5",name:"开票提醒",avatar:"票",category:"official",kind:"公众号",note:"服务通知",wechat:"invoice_service",last:"周一",messages:842,tags:["公众号"],invalid:true,account:"企业沟通号",analysis:"最近 90 天无主动互动，可考虑标记为低优先级。"},
+  {id:"ct6",name:"客户服务台",avatar:"企",category:"work",kind:"企业微信联系人",note:"归档用户",wechat:"corp_helpdesk",last:"昨天 16:40",messages:9240,tags:["企业微信","重要联系人"],invalid:false,account:"企业沟通号",analysis:"工作时段互动稳定，适合导出给法务或客服归档。"}
+];
+let tasks = [
+  {id:"t1",type:"backup",label:"备份",title:"林小满增量备份",account:"林小满",scope:"全部会话",status:"running",statusLabel:"正在备份聊天记录",progress:62,step:"正在保存附件",start:"今天 09:24",elapsed:"18 分钟",left:"11 分钟",path:"主力账号备份",errors:0,warnings:2,currentFile:"IMG_8421.MOV",speed:"182 MB/s",logs:[["info","09:24","开始检查微信目录"],["info","09:29","已保存 24,821 条消息"],["warn","09:36","2 个视频文件较大，仍在处理"],["info","09:39","当前处理 IMG_8421.MOV"]]},
+  {id:"t2",type:"export",label:"导出",title:"家庭群 HTML 归档",account:"家庭账号",scope:"指定会话",status:"waiting",statusLabel:"等待开始",progress:0,step:"等待选择保存位置",start:"今天 09:31",elapsed:"未开始",left:"待开始",path:"未选择",errors:0,warnings:0,currentFile:"",speed:"-",logs:[["info","09:31","已保存导出草稿，等待用户选择保存位置"]]},
+  {id:"t3",type:"import",label:"导入",title:"导入旧电脑备份",account:"企业沟通号",scope:"2 个账号 / 38 个会话",status:"paused",statusLabel:"已暂停，已完成部分会保留",progress:48,step:"正在生成搜索目录",start:"今天 08:56",elapsed:"42 分钟",left:"已暂停",path:"主力账号备份",errors:0,warnings:4,currentFile:"MSG_2020.db",speed:"96 MB/s",logs:[["info","08:56","开始读取旧电脑备份"],["info","09:08","已识别 38 个会话"],["warn","09:21","4 个附件缺少缩略图"],["info","09:38","用户手动暂停任务"]]},
+  {id:"t4",type:"restore",label:"恢复",title:"恢复到工作微信",account:"企业沟通号",scope:"指定会话",status:"failed",statusLabel:"恢复失败",progress:34,step:"连接中断",start:"昨天 18:12",elapsed:"9 分钟",left:"-",path:"目标设备：iPhone 15",errors:3,warnings:1,currentFile:"微信传输通道",speed:"0 MB/s",logs:[["info","18:12","目标设备扫码成功"],["warn","18:17","检测到目标账号与恢复记录不一致"],["error","18:20","目标设备断网，恢复中断"],["error","18:21","未完成的内容保持未写入状态"]]},
+  {id:"t5",type:"backup",label:"备份",title:"昨天夜间自动备份",account:"家庭账号",scope:"全部会话",status:"done",statusLabel:"备份完成",progress:100,step:"任务完成",start:"昨天 22:02",elapsed:"12 分钟",left:"完成",path:"家庭账号备份",errors:0,warnings:0,currentFile:"",speed:"205 MB/s",logs:[["info","22:02","自动备份开始"],["info","22:14","备份完成，完整度 100%"]]},
+  {id:"t6",type:"export",label:"导出",title:"客户沟通审计归档",account:"林小满",scope:"指定时间范围",status:"partial",statusLabel:"部分完成",progress:100,step:"12 个附件未成功保存",start:"7月7日 10:00",elapsed:"28 分钟",left:"完成",path:"/Users/local/Documents/Audit",errors:12,warnings:2,currentFile:"video_1098.mp4",speed:"-",logs:[["info","10:00","开始导出审计归档"],["warn","10:16","2 个文件名过长，已自动重命名"],["error","10:21","12 个视频附件无法读取"],["info","10:28","其余内容已导出完成"]]}
+];
+const state = {view:"home",query:"",currentAccount:"lin",selectedChat:"c1",selectedContact:"ct1",contactCategory:"all",batch:false,selectedChats:new Set(),chatFilters:{attachments:false,type:"all",date:"all"},transferMode:"import",importStep:0,exportStep:0,importSource:"wechat",importFilesSelected:true,importCheckPaused:false,importStrategy:"fill",importAttachmentPolicy:"all",exportRange:"selected",exportFormat:"html",exportEncryptReady:false,exportSavePath:false,restoreStep:0,restoreRange:"selected",restoreStrategy:"fill",restoreAck:false,restoreDeviceConnected:true,drawer:null,drawerTaskId:null,floatingDismissed:false,theme:document.documentElement.dataset.theme,sidebarPreference:false,sidebarCollapsed:false};
+const pageMeta = {home:["首页","先确认当前微信账号，再进入备份、查看、导出或处理异常。"],chats:["聊天记录","找到会话、搜索消息、筛选附件，再决定导出范围。"],contacts:["联系人","整理联系人和群聊，查看最近互动，并快速跳到聊天记录。"],tasks:["备份任务","所有备份、导入、导出和恢复进度都在这里统一查看。"],transfer:["导入导出","以流程工作台的方式一步一步完成导入或导出。"],restore:["恢复到微信","高风险写入前先确认设备、策略和影响范围。"],settings:["设置","管理备份行为、保存位置、安全选项和主题。"]};
+function currentAccount(){return accounts.find(a=>a.id===state.currentAccount) || accounts[0]}
+function currentChat(){return chats.find(c=>c.id===state.selectedChat) || chats[0]}
+function currentContact(){return contacts.find(c=>c.id===state.selectedContact) || contacts[0]}
+function taskById(id){return tasks.find(t=>t.id===id)}
+function taskStatusBadge(status){return status==="running"?["blue","进行中"]:status==="waiting"?["amber","等待中"]:status==="paused"?["amber","已暂停"]:status==="done"?["green","已完成"]:status==="partial"?["amber","部分完成"]:["red",status==="failed"?"失败":"需处理"]}
+function runningTask(){return tasks.find(t=>t.status==="running" || t.status==="waiting")}
+function visibleTasks(){return tasks.filter(t=>hit(`${t.title} ${t.account} ${t.scope} ${t.statusLabel} ${t.path}`))}
+function updateTitleBarMeta(count){
+  $("#globalSearch").placeholder = placeholders[state.view] || placeholders.home;
+  $("#searchBox").classList.toggle("has-query", !!state.query);
+  $("#searchCount").textContent = state.query ? `找到 ${count} 项` : "全部";
+  $("#chatCountBadge").textContent = String(chats.length);
+  $("#taskCountBadge").textContent = String(tasks.filter(t=>["running","waiting","paused"].includes(t.status)).length);
+  const chip = $("#titleStateChip");
+  const chipText = $("#titleStateText");
+  let text = "";
+  if(state.view==="transfer" && state.transferMode==="import" && state.importSource==="phone" && state.importStep>=1) text = "正在连接手机微信...";
+  if(state.view==="restore" && state.restoreStep>=1) text = state.restoreDeviceConnected ? `${currentAccount().device} · ${currentAccount().name} 已连接` : "等待目标设备连接";
+  chip.classList.toggle("hidden", !text);
+  chipText.textContent = text;
 }
-
-navButtons.forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.view)));
-document.querySelectorAll('[data-view-jump]').forEach(btn=>{
-  btn.addEventListener('click',()=>showView(btn.dataset.viewJump));
+function render(){
+  const result = views[state.view]();
+  const [title,desc] = pageMeta[state.view];
+  $("#main").innerHTML = `<section class="page"><header class="page-head"><div class="page-title"><h1>${title}</h1><p>${desc}</p></div><div class="page-actions">${result.actions || ""}</div></header><div class="content">${result.html}</div></section>`;
+  $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===state.view));
+  updateTitleBarMeta(result.count || 0);
+  renderDrawer();
+  renderFloatingTask();
+}
+function accountRow(a){const active=a.id===state.currentAccount;return `<button class="account-row ${active?"active":""}" data-action="switch-account" data-id="${a.id}"><div class="mini-avatar ${a.tone}">${a.avatar}</div><div class="meta"><strong>${hi(a.name)}</strong><span>${hi(a.role)} · ${hi(a.wechat)}</span></div><div class="row-state"><span class="badge ${a.tone==="blue"?"blue":a.tone==="amber"?"amber":active?"green":"gray"}">${active?"当前":a.badge}</span><small>${a.sync}</small></div></button>`}
+function homeTaskRow(t){const [tone,label]=taskStatusBadge(t.status);return `<button class="file-row" data-action="open-task" data-id="${t.id}"><span class="task-icon ${tone}">${icon(t.type==="backup"?"shield":t.type==="export"?"file":t.type==="import"?"transfer":"restore")}</span><span class="meta"><strong>${hi(t.title)}</strong><span>${hi(t.account)} · ${hi(t.step)}</span></span><span class="badge ${tone}">${label}</span></button>`}
+function renderHome(){
+  const a = currentAccount();
+  const words = `${accounts.map(x=>Object.values(x).join(" ")).join(" ")} ${tasks.map(x=>Object.values(x).join(" ")).join(" ")} 备份状态 当前账号 数据概览 快捷操作 异常提醒`;
+  if(state.query && !hit(words)) return empty("没有找到相关内容","请换一个关键词，或检查当前页面筛选条件。");
+  const hasIssues = tasks.some(t=>["failed","partial"].includes(t.status)) || a.issues>0;
+  const summaryTitle = hasIssues ? `有 ${a.issues || 2} 个问题需要处理` : "备份状态正常";
+  const summaryDesc = hasIssues ? "部分附件没有备份成功，建议先查看问题再继续导出或恢复。" : "最近一次备份已完成，当前没有需要立即处理的问题。";
+  return {count:accounts.length + tasks.length + 10,actions:`<button class="btn" data-action="open-drawer" data-drawer="library">查看备份位置</button><button class="btn primary" data-action="new-backup">${icon("plus")}立即备份</button>`,html:`<div class="home-stack"><section class="summary-hero"><div class="summary-copy"><div class="eyebrow">顶部状态摘要</div><h2>${summaryTitle}</h2><p>${summaryDesc}</p><div class="summary-meta"><span class="summary-pill">最近备份：${a.sync}</span><span class="summary-pill">数据完整度：${a.complete}</span><span class="summary-pill">待处理问题：${a.issues}</span></div></div><div class="summary-actions">${hasIssues?`<button class="btn primary" data-action="route-tasks">查看问题</button><button class="btn" data-action="dismiss-floating">稍后处理</button>`:`<button class="btn primary" data-action="new-backup">立即备份</button><button class="btn" data-action="route-tasks">查看备份记录</button>`}</div></section><section class="account-console"><div class="identity-panel"><div class="identity-head"><div class="avatar-hero ${a.tone}">${a.avatar}<span></span></div><div class="identity-copy"><div class="eyebrow">当前账号卡</div><h2>${hi(a.name)}</h2><p>${hi(a.role)} · 微信号：${hi(a.wechat)} · ${hi(a.connected)} · 最近备份：${hi(a.sync)}</p></div></div><div class="scope-note"><b>默认作用范围</b><span>首页统计、聊天记录、导入导出和恢复都会优先使用这个账号。切换账号后，相关数据会同步更新。</span></div><div class="metric-strip"><div><span>会话</span><strong>${fmt(a.sessions)}</strong></div><div><span>消息</span><strong>${fmt(a.messages)}</strong></div><div><span>附件</span><strong>${fmt(a.attachments)}</strong></div><div><span>完整度</span><strong>${a.complete}</strong></div></div><div class="identity-actions"><button class="btn primary" data-action="new-backup">立即备份</button><button class="btn" data-action="scan-account">重新扫描</button><button class="btn" data-action="open-drawer" data-drawer="account">查看详情</button></div></div><aside class="account-rail"><div class="rail-head"><div><h2>微信账号列表</h2><p>多账号模式下先确认你现在操作的是哪一个账号。</p></div><button class="btn flat" data-action="scan-account">重新扫描</button></div><div class="account-list">${accounts.map(accountRow).join("")}</div><button class="scan-line" data-action="scan-account">${icon("refresh")} 重新扫描本机微信账号</button></aside></section><section class="kpis"><div class="card kpi"><span>已备份会话</span><strong>${fmt(a.sessions)}</strong><small>全部可查看</small></div><div class="card kpi"><span>消息数量</span><strong>${fmt(a.messages)}</strong><small>${a.newAdd}</small></div><div class="card kpi"><span>附件数量</span><strong>${fmt(a.attachments)}</strong><small>支持图片、视频、文件、语音</small></div><div class="card kpi"><span>当前占用空间</span><strong>${a.space}</strong><small>可用空间充足</small></div><div class="card kpi"><span>上次新增</span><strong>2.8 万</strong><small>会话 +4 / 消息 +28,312</small></div><div class="card kpi"><span>待处理问题</span><strong>${a.issues}</strong><small>可稍后回到任务页处理</small></div></section><section class="charts-grid"><div class="card chart-card"><div class="chart-title"><h3>消息量趋势图</h3><span>近 7 日</span></div><div class="bars">${charts.trend.map((v,i)=>`<div class="bar-col"><div class="bar" style="height:${Math.max(24,Math.round(v/80))}px"><small>${fmt(v)}</small></div><label>${["周四","周五","周六","周日","周一","周二","今天"][i]}</label></div>`).join("")}</div></div><div class="card chart-card"><div class="chart-title"><h3>TOP 5 活跃会话</h3><span>点击可跳到会话</span></div><div class="rank-list">${charts.top.map((item,i)=>`<button class="rank-row" data-action="jump-chat" data-id="${chats[i].id}"><div><strong>${hi(item.name)}</strong><small>${fmt(item.value)} 条消息</small></div><div class="track"><span style="width:${Math.round(item.value/charts.top[0].value*100)}%"></span></div></button>`).join("")}</div></div><div class="card chart-card"><div class="chart-title"><h3>附件类型分布</h3><span>按空间占用</span></div><div class="pie-list">${charts.attachments.map(item=>`<div class="pie-row"><span class="pie-chip">${item.name}</span><div class="track"><span style="width:${item.width}%;background:${item.color==="green"?"var(--green)":item.color==="blue"?"var(--blue)":item.color==="amber"?"var(--amber)":"var(--muted)"}"></span></div><strong>${item.value}</strong></div>`).join("")}</div></div></section><section class="home-grid"><div class="grid"><div class="card"><div class="card-head"><h2>最近任务</h2><button class="btn flat" data-action="route-tasks">全部任务</button></div><div class="card-body stack">${tasks.slice(0,4).map(homeTaskRow).join("")}</div></div><div class="card"><div class="card-head"><h2>异常提醒</h2><span class="badge amber">可救援</span></div><div class="card-body stack"><div class="notice amber"><strong>部分附件没有保存成功</strong><span>客户沟通审计归档有 12 个视频附件失败。已导出的消息和其他附件仍然保留，可重试失败项。</span></div><div class="notice blue"><strong>旧备份库可以迁移</strong><span>导入旧电脑备份时会先检查文件，不会立刻修改当前数据。</span></div></div></div></div><div class="card"><div class="card-head"><h2>快捷操作</h2><span class="badge blue">常用</span></div><div class="card-body"><div class="option-grid"><button class="option" data-action="route-chats"><strong>查看聊天记录</strong><span>按联系人、群聊、关键词查看消息和附件。</span></button><button class="option" data-action="route-transfer-import"><strong>导入旧备份</strong><span>从旧电脑、迁移包或连接手机微信导入。</span></button><button class="option" data-action="route-transfer-export"><strong>导出聊天记录</strong><span>先选范围，再选格式，再选择保存位置。</span></button><button class="option" data-action="route-restore"><strong>恢复到微信</strong><span>高风险写入前先确认设备和恢复策略。</span></button></div></div></div></section></div>`};
+}
+function filteredChats(){return chats.filter(c=>{if(state.chatFilters.attachments && !c.attachments) return false; if(state.chatFilters.type!=="all" && !c.mediaTypes.includes(state.chatFilters.type)) return false; if(state.chatFilters.date!=="all" && c.dateBucket!==state.chatFilters.date && c.dateBucket!=="all") return false; return hit(`${c.name} ${c.summary} ${c.type} ${c.messages.map(m=>m.join(" ")).join(" ")}`);})}
+function renderChats(){
+  const list = filteredChats();
+  const active = list.find(c=>c.id===state.selectedChat) || chats.find(c=>c.id===state.selectedChat) || chats[0];
+  const messages = active.messages.filter(m=>hit(m.join(" ")));
+  const filterCount = Number(state.chatFilters.attachments) + Number(state.chatFilters.type!=="all") + Number(state.chatFilters.date!=="all");
+  if(!list.length) return {count:0,actions:`<button class="btn" data-action="clear-chat-filters">清空筛选</button>`,html:`<div class="empty"><div><strong>没有符合条件的消息</strong><span>尝试调整筛选条件，或清空筛选查看全部内容。</span><button class="btn" data-action="clear-chat-filters">清空筛选</button></div></div>`};
+  return {count:list.length + messages.length,actions:`<button class="btn ${state.batch?"blue":""}" data-action="toggle-batch">${state.batch?"退出选择":"选择会话"}</button><button class="btn primary" data-action="route-transfer-export">导出当前会话</button>`,html:`${state.batch?`<div class="batch-bar"><span>已进入选择模式，默认阅读模式不会显示勾选框。</span><b>已选 ${state.selectedChats.size} 个</b></div>`:""}<div class="card chat-layout ${state.batch?"batch-mode":""}"><div class="chat-list"><div class="filters-card"><div class="list-top"><strong>高级筛选器</strong><span class="list-sub">筛选条件变化后立即生效，无需点击应用。</span></div><div class="filter-row"><button class="filter-pill ${state.chatFilters.attachments?"active":""}" data-action="toggle-chat-attachments">仅显示包含附件</button><button class="filter-pill ${state.chatFilters.type==="image"?"active":""}" data-action="set-chat-type" data-type="image">仅图片</button><button class="filter-pill ${state.chatFilters.type==="file"?"active":""}" data-action="set-chat-type" data-type="file">仅文件</button><button class="filter-pill ${state.chatFilters.type==="voice"?"active":""}" data-action="set-chat-type" data-type="voice">仅语音</button></div><div class="filter-row"><button class="filter-pill ${state.chatFilters.date==="7d"?"active":""}" data-action="set-chat-date" data-date="7d">最近 7 天</button><button class="filter-pill ${state.chatFilters.date==="30d"?"active":""}" data-action="set-chat-date" data-date="30d">最近 30 天</button><button class="filter-pill ${state.chatFilters.date==="all"?"active":""}" data-action="set-chat-date" data-date="all">全部时间</button></div><div class="filter-summary"><span>已应用 ${filterCount} 个筛选条件</span><button class="btn flat" data-action="clear-chat-filters">清空所有筛选</button></div></div>${list.map(c=>`<button class="chat-item ${c.id===active.id?"active":""} ${state.selectedChats.has(c.id)?"selected":""}" data-action="select-chat" data-id="${c.id}"><span class="select-box">${icon("check")}</span><span class="mini-avatar dark">${c.avatar}</span><span class="meta"><strong>${hi(c.name)}</strong><span>${hi(c.summary)}</span></span><span class="chat-count">${fmt(c.count)}</span></button>`).join("")}</div><div class="chat-pane"><div class="chat-pane-head"><div><strong>${hi(active.name)}</strong><span>${active.type} · ${fmt(active.count)} 条消息 · ${active.detail.lastBackup}</span></div><div style="display:flex;gap:8px"><span class="badge ${active.risk.includes("提醒")?"amber":"green"}">${active.risk}</span><button class="btn" data-action="open-drawer" data-drawer="chat">查看附件</button></div></div><div class="messages">${messages.map(m=>m[0]==="system"?`<div class="day-label">${m[1]}</div>`:`<div class="msg-row ${m[0]==="我"?"me":""}"><span class="who">${m[0]} · ${m[2]}</span><div class="msg">${hi(m[1])}${m[3]?`<div class="attachment">${icon("file")} ${hi(m[3])}</div>`:""}</div></div>`).join("")}</div><div class="chat-tools"><span class="input-like">只读备份记录，不能在这里发送消息</span><button class="btn" data-action="jump-message">定位第一个命中</button></div></div><aside class="detail-side"><section><h3>会话详情</h3><div class="kv"><div><span>会话名称</span><b>${active.name}</b></div><div><span>成员数量</span><b>${active.detail.members}</b></div><div><span>消息数量</span><b>${fmt(active.count)}</b></div><div><span>附件总大小</span><b>${active.detail.files}</b></div><div><span>最近备份</span><b>${active.detail.lastBackup}</b></div><div><span>数据完整度</span><b>${active.detail.complete}</b></div><div><span>风险项</span><b>${active.detail.risk}</b></div></div></section><section><h3>常用操作</h3><div class="stack"><button class="btn" data-action="route-transfer-export">导出此会话</button><button class="btn" data-action="retry-chat-backup">重新备份</button><button class="btn" data-action="open-drawer" data-drawer="chat">查看附件</button><button class="btn" data-action="route-restore">恢复此会话到微信</button></div></section><section><h3>备注</h3><div class="notice blue"><strong>导出联动</strong><span>点击“导出此会话”后会自动切换到导出模式，并带入这个会话作为默认范围。</span></div><p class="muted small">${active.detail.notes}</p></section></aside></div>`};
+}
+function filteredContacts(){return contacts.filter(c=>{if(state.contactCategory!=="all" && c.category!==state.contactCategory) return false; return hit(`${c.name} ${c.note} ${c.wechat} ${c.kind} ${c.tags.join(" ")} ${c.analysis}`);})}
+function renderContacts(){
+  const list = filteredContacts();
+  if(!list.length) return empty("没有找到相关联系人","请换一个关键词，或切换联系人分类。");
+  const active = list.find(c=>c.id===state.selectedContact) || currentContact();
+  const cats=[["all","全部联系人",contacts.length],["friend","好友",contacts.filter(c=>c.category==="friend").length],["group","群聊",contacts.filter(c=>c.category==="group").length],["official","公众号",contacts.filter(c=>c.category==="official").length],["work","企业微信联系人",contacts.filter(c=>c.category==="work").length]];
+  return {count:list.length,actions:`<button class="btn">同步联系人</button><button class="btn primary" data-action="route-transfer-export">导出通讯录</button>`,html:`<div class="contacts-layout"><div class="contact-cats">${cats.map(([id,label,count])=>`<button class="contact-cat ${state.contactCategory===id?"active":""}" data-action="set-contact-category" data-category="${id}"><span>${label}</span><span class="count">${count}</span></button>`).join("")}</div><div class="contact-list">${list.map(c=>`<button class="contact-row ${c.id===active.id?"active":""}" data-action="select-contact" data-id="${c.id}"><div class="mini-avatar ${c.category==="work"?"blue":c.category==="group"?"amber":"green"}">${c.avatar}</div><div class="contact-meta"><strong>${hi(c.name)}</strong><span>${hi(c.kind)} · ${hi(c.note)} · 最近互动 ${hi(c.last)}</span><div class="contact-tags">${c.tags.map(t=>`<span class="contact-tag">${hi(t)}</span>`).join("")}${c.invalid?`<span class="contact-tag">已失效</span>`:""}</div></div><span class="badge ${c.invalid?"amber":"green"}">${fmt(c.messages)}</span></button>`).join("")}</div><aside class="contact-detail"><section><h3>联系人详情</h3><div class="kv"><div><span>名称</span><b>${active.name}</b></div><div><span>类型</span><b>${active.kind}</b></div><div><span>微信号</span><b>${active.wechat}</b></div><div><span>所属账号</span><b>${active.account}</b></div><div><span>最后互动时间</span><b>${active.last}</b></div><div><span>消息数量</span><b>${fmt(active.messages)}</b></div></div></section><section><h3>互动统计</h3><div class="notice blue"><strong>近 30 天分析</strong><span>${active.analysis}</span></div></section><section><h3>快捷操作</h3><div class="stack"><button class="btn" data-action="jump-chat" data-id="${chats.find(c=>c.name===active.name)?.id || "c1"}">查看聊天记录</button><button class="btn" data-action="route-transfer-export">导出该联系人聊天记录</button><button class="btn">添加备注 / 标签</button></div></section></aside></div>`};
+}
+function renderTasks(){
+  const rows = visibleTasks();
+  if(!rows.length) return empty("任务队列为空","当前没有匹配的任务记录。");
+  const running = tasks.filter(t=>t.status==="running").length;
+  const waiting = tasks.filter(t=>t.status==="waiting").length;
+  const issues = tasks.filter(t=>["failed","partial"].includes(t.status)).length;
+  const paused = tasks.filter(t=>t.status==="paused").length;
+  return {count:rows.length,actions:`<button class="btn" data-action="pause-all">暂停全部</button><button class="btn primary" data-action="new-backup">新增备份</button>`,html:`<div class="task-summary"><div class="task-stat"><span>进行中</span><strong>${running}</strong></div><div class="task-stat"><span>等待开始</span><strong>${waiting}</strong></div><div class="task-stat"><span>已暂停</span><strong>${paused}</strong></div><div class="task-stat"><span>需处理</span><strong>${issues}</strong></div></div><div class="task-board">${rows.map(taskCard).join("")}</div>`};
+}
+function taskCard(t){
+  const [tone,label] = taskStatusBadge(t.status);
+  return `<div class="task-card"><div class="task-top"><div><div class="task-title">${hi(t.title)}</div><div class="muted small">${hi(t.label)} · ${hi(t.account)} · ${hi(t.scope)}</div></div><span class="badge ${tone}">${label}</span></div><div class="task-meta-grid"><div><span>当前状态</span><strong>${hi(t.statusLabel)}</strong></div><div><span>当前步骤</span><strong>${hi(t.step)}</strong></div><div><span>开始时间</span><strong>${hi(t.start)}</strong></div><div><span>耗时 / 剩余</span><strong>${hi(t.elapsed)} / ${hi(t.left)}</strong></div><div><span>保存位置</span><strong>${hi(t.path)}</strong></div></div><div><div class="progress-label"><span>进度</span><b>${t.progress}%</b></div><div class="progress ${tone}"><span style="width:${t.progress}%"></span></div></div><div class="task-foot"><span class="task-note">当前处理文件：${t.currentFile || "无"} · 速度：${t.speed} · 警告 ${t.warnings} · 错误 ${t.errors}</span><div class="task-actions">${taskActions(t).join("")}</div></div></div>`;
+}
+function taskActions(t){
+  if(t.status==="running") return [`<button class="btn" data-action="toggle-task" data-id="${t.id}">暂停</button>`,`<button class="btn blue" data-action="open-task" data-id="${t.id}">查看详情</button>`];
+  if(t.status==="paused") return [`<button class="btn primary" data-action="toggle-task" data-id="${t.id}">继续</button>`,`<button class="btn" data-action="cancel-task" data-id="${t.id}">取消</button>`];
+  if(t.status==="waiting") return [`<button class="btn primary" data-action="start-waiting" data-id="${t.id}">提前开始</button>`,`<button class="btn" data-action="cancel-task" data-id="${t.id}">取消</button>`];
+  if(t.status==="done") return [`<button class="btn" data-action="open-location" data-id="${t.id}">打开位置</button>`,`<button class="btn blue" data-action="open-task" data-id="${t.id}">查看报告</button>`];
+  if(t.status==="partial") return [`<button class="btn amber" data-action="open-task" data-id="${t.id}">查看问题</button>`,`<button class="btn primary" data-action="retry-task" data-id="${t.id}">重试失败项</button>`];
+  return [`<button class="btn danger" data-action="retry-task" data-id="${t.id}">重试</button>`,`<button class="btn blue" data-action="open-task" data-id="${t.id}">查看日志</button>`];
+}
+function transferSteps(){return state.transferMode==="export" ? [["选择导出范围","选择全部内容、指定账号、指定会话或当前搜索结果"],["选择导出格式","MVP 推荐 HTML 归档或加密迁移包"],["设置导出内容","决定包含哪些媒体、是否脱敏和是否加密"],["选择保存位置","检查权限、空间和同名文件"],["开始导出","加入任务队列并在页面内查看当前阶段"]] : [["选择来源","微信备份文件、连接手机微信或迁移包"],["选择文件或目录","先读取并列出来源，不会立刻写入"],["检查文件","读取账号、会话、消息和附件，并显示警告或错误"],["确认保存方式","选择账号匹配、重复处理和附件策略"],["开始导入","加入任务队列并持续展示进度"]]}
+function transferCount(){return tasks.filter(t=>["backup","import","export"].includes(t.type)).length + 5}
+function renderTransfer(){
+  const steps = transferSteps();
+  const step = state.transferMode==="export" ? state.exportStep : state.importStep;
+  return {count:transferCount(),actions:`<div class="segment"><button class="${state.transferMode==="import"?"active":""}" data-action="set-transfer-mode" data-mode="import">导入</button><button class="${state.transferMode==="export"?"active":""}" data-action="set-transfer-mode" data-mode="export">导出</button></div>`,html:`<div class="transfer-shell"><div class="transfer-body"><aside class="stepper">${steps.map((s,i)=>`<button class="step-btn ${i===step?"active":i<step?"done":""} ${state.transferMode==="import" && i===2 && state.importCheckPaused?"warn":""}" data-action="jump-step" data-step="${i}"><span>${i+1}</span><div><strong>${s[0]}</strong><small>${s[1]}</small></div>${i<step?`<span class="badge green">完成</span>`:""}</button>`).join("")}</aside><main class="work-panel"><div class="work-head"><h2>${steps[step][0]}</h2><p>${state.transferMode==="export"?"导出前会先计算范围、格式、内容和保存位置。":"导入前会先检查文件，不会立刻修改当前数据。"}</p></div><div class="work-body">${transferStep()}</div><div class="work-foot"><span class="reason">${primaryReason()}</span><div><button class="btn" data-action="step-back" ${step===0?"disabled":""}>上一步</button><button class="btn primary" data-action="step-next">${step===steps.length-1?(state.transferMode==="export"?"开始导出":"开始导入"):"下一步"}</button></div></div></main><aside class="preview-panel"><h3>右侧预览与风险区</h3><div class="preview-stats">${transferPreviewStats().map(([k,v])=>`<div class="stat"><span>${k}</span><strong>${v}</strong></div>`).join("")}</div>${transferPreviewNotice()}</aside></div><div class="queue-panel"><div class="card-head" style="padding:0"><h2>底部任务队列</h2><span class="badge blue">展示备份 / 导入 / 导出</span></div><div class="transfer-queue">${tasks.filter(t=>["backup","import","export"].includes(t.type)).map(queueRow).join("")}</div></div></div>`};
+}
+function transferStep(){
+  if(state.transferMode==="import"){
+    if(state.importStep===0) return `<div class="option-grid three"><button class="option ${state.importSource==="wechat"?"active":""}" data-action="set-import-source" data-source="wechat"><strong>微信客户端备份文件</strong><span>导入微信 PC 端生成的备份文件（推荐）。</span></button><button class="option ${state.importSource==="phone"?"active":""}" data-action="set-import-source" data-source="phone"><strong>连接手机微信</strong><span>手机扫码，实时传输聊天记录到当前备份位置。</span></button><button class="option ${state.importSource==="package"?"active":""}" data-action="set-import-source" data-source="package"><strong>本产品备份包 / 迁移包</strong><span>适合换电脑或首次迁移使用。</span></button></div><div class="notice blue"><strong>下一步提示</strong><span>选择来源后我们会先检查文件，不会立刻修改当前数据。</span></div>`;
+    if(state.importStep===1) return `<div class="stack"><div class="file-row"><span class="task-icon blue">${icon("file")}</span><span class="meta"><strong>${state.importSource==="phone"?"已连接 iPhone 15 Pro":"旧电脑备份目录 /Users/old-mac/WeChatBackup"}</strong><span>${state.importSource==="phone"?"实时传输 · 预计检查 3 分钟":"12.6GB · 修改时间 2026-07-08 20:12 · 可读取"}</span></span><span class="badge green">${state.importSource==="phone"?"已连接":"可读取"}</span></div><div class="notice ${state.importFilesSelected?"green":"amber"}"><strong>${state.importFilesSelected?"文件已准备好":"还没有选择文件"}</strong><span>${state.importFilesSelected?"支持多个来源同时检查，不支持的文件会单独标出。":"请先选择文件或目录。"}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-action="choose-import-files">${state.importSource==="phone"?"刷新连接":"选择文件或目录"}</button><button class="btn">拖入文件到这里</button></div></div>`;
+    if(state.importStep===2) return `<div class="stack"><div class="notice ${state.importCheckPaused?"amber":"green"}"><strong>${state.importCheckPaused?"检查已暂停":"文件检查通过"}</strong><span>${state.importCheckPaused?"已读取的内容会保留，继续后会从暂停位置往下检查。":"已识别 2 个账号、38 个会话、42,816 条消息、3,240 个附件。"}</span></div><div class="step-metrics"><div class="mini-card"><span>已识别账号数</span><strong>2</strong></div><div class="mini-card"><span>会话数</span><strong>38</strong></div><div class="mini-card"><span>消息数</span><strong>42,816</strong></div><div class="mini-card"><span>附件数</span><strong>3,240</strong></div></div><div><div class="progress-label"><span>当前阶段</span><b>${state.importCheckPaused?"已暂停":"正在检查是否完整"}</b></div><div class="progress blue"><span style="width:${state.importCheckPaused?52:100}%"></span></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ${state.importCheckPaused?"primary":""}" data-action="toggle-import-check">${state.importCheckPaused?"继续检查":"暂停检查"}</button><button class="btn" data-action="open-drawer" data-drawer="check-report">查看详情</button></div></div>`;
+    if(state.importStep===3) return `<div class="stack"><div class="key-grid"><div class="mini-card"><span>保存位置</span><strong>当前备份位置</strong><small class="muted">主力账号备份 · 可用空间 412GB</small></div><div class="mini-card"><span>账号匹配</span><strong>${state.currentAccount==="lin"?"与当前账号一致":"这份记录看起来属于另一个账号"}</strong><small class="muted">可选择保存到原账号、当前账号或创建新账号记录</small></div></div><div class="option-grid"><button class="option ${state.importStrategy==="skip"?"active":""}" data-action="set-import-strategy" data-strategy="skip"><strong>跳过已存在的记录</strong><span>最安全，已有内容不会被改动。</span></button><button class="option ${state.importStrategy==="fill"?"active":""}" data-action="set-import-strategy" data-strategy="fill"><strong>只补充缺失内容</strong><span>推荐，可补全缺少的附件或消息。</span></button><button class="option ${state.importStrategy==="keep"?"active":""}" data-action="set-import-strategy" data-strategy="keep"><strong>保留两份</strong><span>适合不确定是否重复时使用。</span></button><button class="option ${state.importStrategy==="overwrite"?"active":""}" data-action="set-import-strategy" data-strategy="overwrite"><strong>覆盖已有记录</strong><span>风险较高，会替换当前已有内容。</span></button></div><div class="option-grid"><button class="option ${state.importAttachmentPolicy==="all"?"active":""}" data-action="set-import-attachment" data-policy="all"><strong>全部导入</strong><span>记录最完整。</span></button><button class="option ${state.importAttachmentPolicy==="light"?"active":""}" data-action="set-import-attachment" data-policy="light"><strong>只导入图片和文件</strong><span>跳过视频和语音，节省空间。</span></button><button class="option ${state.importAttachmentPolicy==="bigskip"?"active":""}" data-action="set-import-attachment" data-policy="bigskip"><strong>跳过大文件</strong><span>适合空间紧张的设备。</span></button><button class="option ${state.importAttachmentPolicy==="text"?"active":""}" data-action="set-import-attachment" data-policy="text"><strong>暂不导入附件</strong><span>只保存文字消息。</span></button></div></div>`;
+    return `<div class="stack"><div class="notice green"><strong>可以开始导入到当前备份位置</strong><span>导入后会在底部任务队列新增任务，并持续显示总进度、当前阶段和剩余时间。</span></div><div class="step-metrics"><div class="mini-card"><span>将导入会话</span><strong>18 个</strong></div><div class="mini-card"><span>将导入消息</span><strong>42,816 条</strong></div><div class="mini-card"><span>将导入附件</span><strong>3,240 个</strong></div><div class="mini-card"><span>预计占用空间</span><strong>12.6GB</strong></div></div><div class="notice amber"><strong>重复内容处理</strong><span>${state.importStrategy==="fill"?"只补充缺失内容（推荐）":state.importStrategy==="skip"?"跳过已存在记录":"会在确认后按你选择的策略处理重复记录"}。</span></div></div>`;
+  }
+  if(state.exportStep===0) return `<div class="option-grid three">${[["all","全部聊天记录","导出当前备份位置里的全部内容"],["account","指定微信账号","只导出当前或某个账号的数据"],["selected","指定会话","选择一个或多个联系人、群聊"],["time","指定时间范围","只导出某段时间内的聊天"],["search","当前搜索结果","只导出当前搜索命中的内容"],["favorite","收藏会话","适合重点长期归档"]].map(([id,title,desc])=>`<button class="option ${state.exportRange===id?"active":""}" data-action="set-export-range" data-range="${id}"><strong>${title}</strong><span>${desc}</span></button>`).join("")}</div><div class="notice blue"><strong>右侧预估内容</strong><span>选择范围后会立即更新会话数量、消息数量、附件数量和预计导出大小。</span></div>`;
+  if(state.exportStep===1) return `<div class="option-grid three"><button class="option ${state.exportFormat==="html"?"active":""}" data-action="set-format" data-value="html"><strong>HTML 归档</strong><span>像网页一样打开查看，适合长期保存。</span></button><button class="option ${state.exportFormat==="package"?"active":""}" data-action="set-format" data-value="package"><strong>加密迁移包</strong><span>可用于换电脑恢复，必须设置密码。</span></button><button class="option coming"><strong>PDF</strong><span>固定版式，方便打印或提交（V1）。</span></button><button class="option coming"><strong>CSV</strong><span>适合表格分析（V1）。</span></button><button class="option coming"><strong>JSON</strong><span>适合开发处理（V1）。</span></button><button class="option coming"><strong>Markdown</strong><span>适合放到笔记工具（V1）。</span></button></div>`;
+  if(state.exportStep===2) return `<div class="stack">${[["images","包含图片",true],["video","包含视频",false],["voice","包含语音",true],["file","包含文件",true],["link","包含链接预览",true],["system","包含系统消息",false],["mask","隐藏手机号和微信号",false],["watermark","添加水印",false],["checklist","生成校验清单",true]].map(([id,label,on])=>`<button class="switch-row ${on?"active":""}" data-action="noop"><span><strong>${label}</strong><br><span class="muted small">调整后右侧预估大小会立即更新。</span></span><span class="toggle"></span></button>`).join("")}${state.exportFormat==="package"?`<div class="notice ${state.exportEncryptReady?"green":"amber"}"><strong>${state.exportEncryptReady?"迁移包密码已设置":"迁移包必须设置密码"}</strong><span>${state.exportEncryptReady?"密码已通过确认，可以继续下一步。":"密码未设置时，开始导出按钮会保持禁用。"}</span></div><button class="btn ${state.exportEncryptReady?"":"primary"}" data-action="toggle-export-password">${state.exportEncryptReady?"重新设置密码":"设置密码"}</button>`:""}</div>`;
+  if(state.exportStep===3) return `<div class="stack"><div class="notice ${state.exportSavePath?"green":"amber"}"><strong>${state.exportSavePath?"保存位置可用":"还没有选择保存位置"}</strong><span>${state.exportSavePath?"~/Documents/WeArchive/Exports 可写，预计空间足够，已自动检查同名文件。":"请选择一个有写入权限的位置。"}</span></div><div class="option-grid"><button class="option active"><strong>本地文件夹</strong><span>适合默认导出位置。</span></button><button class="option"><strong>外接硬盘</strong><span>适合长期归档。</span></button><button class="option"><strong>网络位置</strong><span>适合团队共享。</span></button><button class="option"><strong>云同步目录</strong><span>适合多设备查看。</span></button></div><button class="btn primary" data-action="choose-path">选择保存位置</button></div>`;
+  return `<div class="stack"><div class="notice green"><strong>可以开始导出</strong><span>点击后会加入底部任务队列，并在当前页面持续显示执行阶段。</span></div><div class="step-metrics"><div class="mini-card"><span>会话</span><strong>3 个</strong></div><div class="mini-card"><span>消息</span><strong>31,092 条</strong></div><div class="mini-card"><span>附件</span><strong>426 个</strong></div><div class="mini-card"><span>预计大小</span><strong>${state.exportFormat==="package"?"8.4GB":"3.6GB"}</strong></div></div><div class="notice blue"><strong>执行阶段</strong><span>收集聊天记录 → 处理图片、语音和文件 → 生成导出文件 → 压缩 / 加密 → 检查文件是否完整。</span></div></div>`;
+}
+function transferPreviewStats(){if(state.transferMode==="import") return [["模式","导入"],["来源",state.importSource==="wechat"?"微信备份文件":state.importSource==="phone"?"连接手机微信":"迁移包"],["账号",currentAccount().name],["保存位置","当前备份位置"],["将导入会话","18 个"],["预计空间","12.6GB"]]; return [["模式","导出"],["范围",state.exportRange==="selected"?"指定会话":state.exportRange==="all"?"全部聊天记录":"其他范围"],["格式",state.exportFormat==="html"?"HTML 归档":"加密迁移包"],["位置",state.exportSavePath?"已选择":"未选择"],["会话数","3 个"],["预计大小",state.exportFormat==="package"?"8.4GB":"3.6GB"]]}
+function transferPreviewNotice(){if(state.transferMode==="import") return `<div class="notice blue"><strong>将导入什么</strong><span>预计导入 18 个会话、42,816 条消息、3,240 个附件。重复内容将按“${state.importStrategy==="fill"?"只补充缺失内容":state.importStrategy==="skip"?"跳过已存在记录":state.importStrategy==="keep"?"保留两份":"覆盖已有记录"}”处理。</span></div>`; return state.exportFormat==="package" && !state.exportEncryptReady ? `<div class="notice amber"><strong>还缺少密码</strong><span>加密迁移包必须先设置密码，才能继续开始导出。</span></div>` : `<div class="notice blue"><strong>风险提示</strong><span>家庭群中包含 14 个超过 200MB 的视频。导出为 HTML 时会保留为独立附件文件。</span></div>`}
+function primaryReason(){if(state.transferMode==="import") return state.importStep===1 && !state.importFilesSelected ? "请先选择文件或目录。" : state.importStep===2 && state.importCheckPaused ? "检查已暂停，继续后会从暂停位置往下处理。" : state.importStep===4 ? "确认无误后会创建导入任务。" : "当前步骤已准备好，可以继续。"; if(state.exportStep===2 && state.exportFormat==="package" && !state.exportEncryptReady) return "请先设置迁移包密码。"; if(state.exportStep===3 && !state.exportSavePath) return "请先选择保存位置。"; if(state.exportStep===4) return "确认范围、格式、内容和保存位置后即可创建导出任务。"; return "当前步骤已准备好，可以继续。"}
+function queueRow(t){const [tone,label]=taskStatusBadge(t.status);return `<div class="queue-row"><span class="task-icon ${tone}">${icon(t.type==="backup"?"shield":t.type==="export"?"file":t.type==="import"?"transfer":"restore")}</span><span class="meta"><strong>${hi(t.title)}</strong><span>${hi(t.step)} · ${t.progress}% · ${hi(t.left)}</span></span><span class="badge ${tone}">${label}</span></div>`}
+function renderRestore(){
+  const steps = [["选择要恢复的内容","范围与导出类似，可选择会话、账号或时间范围"],["连接目标设备","扫码连接目标微信，确认设备与账号"],["选择恢复策略","决定遇到已有聊天记录时怎么处理"],["确认风险并开始","必须勾选确认，才会真正开始恢复"],["传输完成","展示总进度、速度与恢复报告"]];
+  const step = state.restoreStep;
+  return {count:steps.length + 4,actions:`<button class="btn">查看连接帮助</button><button class="btn danger" data-action="restore-next">${step===4?"查看恢复报告":"继续恢复流程"}</button>`,html:`<div class="transfer-shell"><div class="transfer-body"><aside class="stepper">${steps.map((s,i)=>`<button class="step-btn ${i===step?"active":i<step?"done":""}" data-action="set-restore-step" data-step="${i}"><span>${i+1}</span><div><strong>${s[0]}</strong><small>${s[1]}</small></div>${i<step?`<span class="badge green">完成</span>`:""}</button>`).join("")}</aside><main class="work-panel"><div class="work-head"><h2>${steps[step][0]}</h2><p>恢复到微信是高风险写入操作。恢复前建议先在微信里备份一次当前数据。</p></div><div class="work-body">${restoreStep()}</div><div class="work-foot"><span class="reason">${restoreReason()}</span><div><button class="btn" data-action="restore-back" ${step===0?"disabled":""}>上一步</button><button class="btn danger" data-action="restore-next">${step===4?"完成":"下一步"}</button></div></div></main><aside class="preview-panel"><h3>恢复预估</h3><div class="preview-stats"><div class="stat"><span>会话数量</span><strong>3 个</strong></div><div class="stat"><span>消息数量</span><strong>12,482 条</strong></div><div class="stat"><span>附件数量</span><strong>426 个</strong></div><div class="stat"><span>预计传输时间</span><strong>8 分钟</strong></div></div><div class="notice red"><strong>和导出不同</strong><span>导出只生成文件，恢复到微信会往目标微信客户端写入数据，因此必须确认设备、账号和冲突策略。</span></div></aside></div></div>`};
+}
+function restoreStep(){
+  if(state.restoreStep===0) return `<div class="option-grid"><button class="option ${state.restoreRange==="all"?"active":""}" data-action="set-restore-range" data-range="all"><strong>全部聊天记录</strong><span>恢复当前备份位置里的全部内容。</span></button><button class="option ${state.restoreRange==="account"?"active":""}" data-action="set-restore-range" data-range="account"><strong>指定微信账号</strong><span>只恢复某个账号的数据。</span></button><button class="option ${state.restoreRange==="selected"?"active":""}" data-action="set-restore-range" data-range="selected"><strong>指定会话</strong><span>只恢复项目推进群、家庭群和陈晓。</span></button><button class="option ${state.restoreRange==="time"?"active":""}" data-action="set-restore-range" data-range="time"><strong>指定时间范围</strong><span>只恢复最近 30 天的聊天记录。</span></button></div>`;
+  if(state.restoreStep===1) return `<div class="grid" style="grid-template-columns:260px 1fr;gap:14px"><div class="qr-box">等待设备扫码</div><div class="stack"><div class="notice blue"><strong>连接指引</strong><span>请让要恢复的设备和这台设备连接同一个 Wi‑Fi，然后在目标设备微信里打开“恢复聊天记录”，扫描左侧二维码。</span></div><div class="file-row"><span class="task-icon green">${icon("shield")}</span><span class="meta"><strong>${state.restoreDeviceConnected?"已连接 iPhone 15 Pro":"等待设备连接"}</strong><span>${state.restoreDeviceConnected?`${currentAccount().name} · 将恢复到手机微信`:"扫码成功后会显示设备名称和微信账号"}</span></span><span class="badge ${state.restoreDeviceConnected?"green":"amber"}">${state.restoreDeviceConnected?"已连接":"等待中"}</span></div></div></div>`;
+  if(state.restoreStep===2) return `<div class="stack"><div class="option-grid"><button class="option ${state.restoreStrategy==="skip"?"active":""}" data-action="set-restore-strategy" data-strategy="skip"><strong>跳过已存在的记录</strong><span>最安全，微信里已有的内容不会被改动。</span></button><button class="option ${state.restoreStrategy==="fill"?"active":""}" data-action="set-restore-strategy" data-strategy="fill"><strong>只补充缺失内容</strong><span>推荐，可补全微信里缺少的消息。</span></button><button class="option ${state.restoreStrategy==="keep"?"active":""}" data-action="set-restore-strategy" data-strategy="keep"><strong>保留两份</strong><span>可能产生重复消息。</span></button><button class="option ${state.restoreStrategy==="overwrite"?"active":""}" data-action="set-restore-strategy" data-strategy="overwrite"><strong>覆盖已有记录</strong><span>风险最高，会替换微信里已有内容。</span></button></div><div class="notice ${["keep","overwrite"].includes(state.restoreStrategy)?"amber":"green"}"><strong>${["keep","overwrite"].includes(state.restoreStrategy)?"需要额外确认风险":"推荐策略"}</strong><span>${state.restoreStrategy==="fill"?"只补充缺失内容，最适合普通用户。":"保留两份或覆盖已有记录前，请确认目标账号正确。"}</span></div><div class="option-grid"><button class="option active"><strong>包含图片</strong><span>恢复图片原图。</span></button><button class="option active"><strong>包含视频</strong><span>恢复后在微信中可继续查看。</span></button><button class="option active"><strong>包含语音</strong><span>保留语音消息。</span></button><button class="option active"><strong>包含文件</strong><span>尽量完整恢复文件。</span></button></div></div>`;
+  if(state.restoreStep===3) return `<div class="stack"><div class="notice red"><strong>确认后将开始恢复</strong><span>将恢复到：${currentAccount().device} · ${currentAccount().name}。恢复过程中请保持目标设备的微信在前台、设备联网且不要退出。</span></div><div class="step-metrics"><div class="mini-card"><span>恢复内容</span><strong>3 个会话</strong></div><div class="mini-card"><span>消息</span><strong>12,482 条</strong></div><div class="mini-card"><span>附件</span><strong>426 个</strong></div><div class="mini-card"><span>策略</span><strong>${state.restoreStrategy==="fill"?"只补充缺失":state.restoreStrategy==="skip"?"跳过重复":state.restoreStrategy==="keep"?"保留两份":"覆盖已有记录"}</strong></div></div><button class="switch-row ${state.restoreAck?"active":""}" data-action="toggle-restore-ack"><span><strong>我已确认要恢复的设备和策略，并知道此操作可能产生重复消息。</strong><br><span class="muted small">未确认前，开始恢复按钮会保持禁用。</span></span><span class="toggle"></span></button></div>`;
+  return `<div class="stack"><div class="notice green"><strong>传输进行中</strong><span>请保持目标设备的微信在前台。开始后支持暂停、继续，但不支持取消。</span></div><div><div class="progress-label"><span>当前阶段</span><b>正在传输聊天记录</b></div><div class="progress blue"><span style="width:58%"></span></div></div><div class="step-metrics"><div class="mini-card"><span>已传输会话</span><strong>2 / 3</strong></div><div class="mini-card"><span>已传输消息</span><strong>7,840 条</strong></div><div class="mini-card"><span>当前速度</span><strong>12.4 MB/s</strong></div><div class="mini-card"><span>预计剩余</span><strong>3 分钟</strong></div></div></div>`;
+}
+function restoreReason(){if(state.restoreStep===1 && !state.restoreDeviceConnected) return "请先连接目标设备。"; if(state.restoreStep===3 && !state.restoreAck) return "请先勾选最终确认。"; if(state.restoreStep===4) return "恢复任务会继续在后台执行，并在任务页保留日志。"; return "当前步骤已准备好，可以继续。"}
+function renderSettings(){
+  const words = "自动备份 保存位置 默认导出位置 暗黑模式 跟随系统 本地备份加密 导出默认加密 敏感信息默认隐藏 操作日志 启动时需要密码 缓存上限";
+  if(state.query && !hit(words)) return empty("没有找到相关设置项","请换一个关键词，或清空搜索查看全部设置。");
+  return {count:12,actions:`<button class="btn">检查保存位置</button><button class="btn primary" data-action="save-settings">保存设置</button>`,html:`<div class="settings-grid"><div class="card"><div class="card-head"><h2>备份设置</h2></div><div class="card-body stack"><button class="switch-row active"><span><strong>备份前检查文件完整性</strong><br><span class="muted small">开启后先检查文件是否完整，再开始备份。</span></span><span class="toggle"></span></button><button class="switch-row"><span><strong>低电量暂停</strong><br><span class="muted small">笔记本电量较低时暂停长任务。</span></span><span class="toggle"></span></button><button class="switch-row active"><span><strong>外接硬盘断开时暂停</strong><br><span class="muted small">避免导出到外接盘时意外中断。</span></span><span class="toggle"></span></button><button class="switch-row active"><span><strong>完成后通知</strong><br><span class="muted small">任务完成或失败时给出轻量提示。</span></span><span class="toggle"></span></button></div></div><div class="card"><div class="card-head"><h2>存储设置</h2></div><div class="card-body"><div class="setting-row"><div><div class="setting-title">当前备份位置</div><div class="setting-desc">主力账号备份 · 完整路径和健康状态可在详情抽屉中查看。</div></div><div style="display:flex;gap:8px"><button class="btn" data-action="open-drawer" data-drawer="library">查看</button><button class="btn">更换</button></div></div><div class="setting-row"><div><div class="setting-title">默认导出位置</div><div class="setting-desc">~/Documents/WeArchive/Exports</div></div><span class="select-like">已设置</span></div><div class="setting-row"><div><div class="setting-title">缓存上限</div><div class="setting-desc">超过上限后提醒清理，不自动删除原始备份。</div></div><span class="select-like">80GB</span></div><div class="setting-row"><div><div class="setting-title">自动清理策略</div><div class="setting-desc">仅清理临时文件和中间导出文件。</div></div><span class="select-like">30 天</span></div></div></div><div class="card"><div class="card-head"><h2>安全设置</h2></div><div class="card-body stack"><button class="switch-row active"><span><strong>本地备份加密</strong><br><span class="muted small">保护备份数据本身，忘记密码将无法解密。</span></span><span class="toggle"></span></button><button class="switch-row active"><span><strong>导出默认加密</strong><br><span class="muted small">导出加密迁移包时默认要求设置密码。</span></span><span class="toggle"></span></button><button class="switch-row"><span><strong>敏感信息默认隐藏</strong><br><span class="muted small">导出时默认隐藏手机号和微信号。</span></span><span class="toggle"></span></button><button class="switch-row active"><span><strong>操作日志</strong><br><span class="muted small">保留最近 30 天导入、导出和恢复日志。</span></span><span class="toggle"></span></button><button class="switch-row"><span><strong>启动时需要密码（V1）</strong><br><span class="muted small">适合共享设备场景，遗忘后无法找回。</span></span><span class="toggle"></span></button></div></div><div class="card"><div class="card-head"><h2>外观与通知</h2></div><div class="card-body"><div class="setting-row"><div><div class="setting-title">暗黑模式</div><div class="setting-desc">支持浅色、暗色和跟随系统。当前切换会立即生效并持久化保存。</div></div><button class="btn" data-action="toggle-theme">${state.theme==="dark"?"切到浅色":"切到暗色"}</button></div><div class="setting-row"><div><div class="setting-title">主题模式</div><div class="setting-desc">未手动选择时可跟随系统设置。</div></div><span class="select-like">${state.theme==="dark"?"深色":"浅色"}</span></div><div class="setting-row"><div><div class="setting-title">系统外观预览</div><div class="setting-desc">标题栏可切换 macOS / Windows 预览，不影响数据。</div></div><span class="select-like">${$("#windowFrame").dataset.os==="mac"?"macOS":"Windows"}</span></div><div class="setting-row"><div><div class="setting-title">通知方式</div><div class="setting-desc">长任务不只用 Toast，仍会在页面内展示步骤和进度。</div></div><span class="select-like">桌面通知 + 页内状态</span></div></div></div></div>`};
+}
+function empty(title,desc){return {count:0,actions:"",html:`<div class="empty"><div><strong>${title}</strong><span>${desc}</span><button class="btn" data-action="clear-search">清空搜索</button></div></div>`}}
+const views = {home:renderHome,chats:renderChats,contacts:renderContacts,tasks:renderTasks,transfer:renderTransfer,restore:renderRestore,settings:renderSettings};
+function renderDrawer(){
+  const d = $("#drawer");
+  if(!state.drawer){d.className="drawer";d.innerHTML="";return}
+  let title="详情", body=`<div class="notice blue"><strong>说明</strong><span>这里显示当前项目的详细信息。</span></div>`;
+  if(state.drawer==="library") title="备份位置详情", body=`<div class="notice green"><strong>当前备份位置正常</strong><span>完整度 99.8%，最近检查时间：今天 10:42。</span></div><div class="kv"><div><span>位置名称</span><b>主力账号备份</b></div><div><span>完整路径</span><b>/Users/local/WeArchive/Main</b></div><div><span>已使用空间</span><b>128.6GB</b></div><div><span>可用空间</span><b>412GB</b></div><div><span>数据完整度</span><b>99.8%</b></div><div><span>最近检查时间</span><b>今天 10:42</b></div></div><div class="notice blue"><strong>管理入口</strong><span>如果要更换保存位置或迁移已有数据，请到设置页的存储设置中处理。</span></div><button class="btn primary" data-action="route-settings">前往存储设置</button>`;
+  if(state.drawer==="chat") title="会话附件", body=`<div class="stack">${["旧库样例.zip · 1.8GB","合同归档.pdf · 2.4MB","对账截图.zip · 680MB"].map(f=>`<div class="file-row"><span class="task-icon blue">${icon("file")}</span><span class="meta"><strong>${f.split(" · ")[0]}</strong><span>${f.split(" · ")[1]} · 可查看</span></span><span class="badge green">可读取</span></div>`).join("")}</div>`;
+  if(state.drawer==="account"){const a=currentAccount(); title="当前账号详情"; body=`<div class="notice blue"><strong>当前操作账号</strong><span>这里会影响首页统计、聊天记录、导入导出和恢复的默认作用范围。</span></div><div class="kv"><div><span>昵称</span><b>${a.name}</b></div><div><span>微信号</span><b>${a.wechat}</b></div><div><span>最近备份</span><b>${a.sync}</b></div><div><span>数据完整度</span><b>${a.complete}</b></div><div><span>会话 / 消息 / 附件</span><b>${fmt(a.sessions)} / ${fmt(a.messages)} / ${fmt(a.attachments)}</b></div></div>`}
+  if(state.drawer==="check-report") title="检查报告", body=`<div class="notice amber"><strong>发现 4 个需要注意的问题</strong><span>这些问题不会阻止导入，但可能影响部分附件或消息。</span></div><div class="stack"><div class="file-row"><span class="task-icon amber">${icon("alert")}</span><span class="meta"><strong>4 个附件缺少缩略图</strong><span>导入后仍可保留原文件，但预览会延后生成。</span></span><span class="badge amber">警告</span></div><div class="file-row"><span class="task-icon green">${icon("check")}</span><span class="meta"><strong>消息结构检查通过</strong><span>账号、会话和消息体都可读取。</span></span><span class="badge green">通过</span></div></div>`;
+  if(state.drawer==="task"){const t=taskById(state.drawerTaskId)||tasks[0]; title=`${t.title} - 详情`; body=`<div class="notice ${t.status==="failed"?"red":t.status==="partial"?"amber":"blue"}"><strong>${t.statusLabel}</strong><span>当前步骤：${t.step}。已处理消息 / 附件会持续保留。</span></div><div class="step-metrics"><div class="mini-card"><span>总进度</span><strong>${t.progress}%</strong></div><div class="mini-card"><span>当前处理文件</span><strong>${t.currentFile || "无"}</strong></div><div class="mini-card"><span>速度</span><strong>${t.speed}</strong></div><div class="mini-card"><span>预计剩余</span><strong>${t.left}</strong></div></div><div class="kv"><div><span>账号</span><b>${t.account}</b></div><div><span>数据范围</span><b>${t.scope}</b></div><div><span>保存位置</span><b>${t.path}</b></div><div><span>警告 / 错误</span><b>${t.warnings} / ${t.errors}</b></div></div><div class="card"><div class="card-head"><h2>日志</h2><button class="btn flat" data-action="copy-errors">复制错误</button></div><div class="card-body stack">${t.logs.map(log=>`<div class="file-row"><span class="task-icon ${log[0]==="error"?"red":log[0]==="warn"?"amber":"blue"}">${icon(log[0]==="error"?"alert":log[0]==="warn"?"clock":"check")}</span><span class="meta"><strong>${log[1]} · ${log[2]}</strong><span>${log[3] || ""}</span></span><span class="badge ${log[0]==="error"?"red":log[0]==="warn"?"amber":"green"}">${log[0]==="error"?"错误":log[0]==="warn"?"警告":"信息"}</span></div>`).join("")}</div></div>`}
+  d.className="drawer open";
+  d.innerHTML=`<div class="drawer-head"><h2>${title}</h2><button class="btn icon-btn" data-action="close-drawer">${icon("x")}</button></div><div class="drawer-body">${body}</div>`;
+}
+function renderFloatingTask(){const card=$("#floatingTask"); const t=runningTask(); const show=t && !["tasks","transfer"].includes(state.view) && !state.floatingDismissed; if(!show){card.className="floating-task hidden";card.innerHTML="";return} const [tone,label]=taskStatusBadge(t.status); card.className="floating-task"; card.innerHTML=`<div class="floating-head"><strong>全局任务指示</strong><button class="btn icon-btn" data-action="dismiss-floating">${icon("x")}</button></div><div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center"><span class="task-icon ${tone}">${icon(t.type==="backup"?"shield":t.type==="export"?"file":"transfer")}</span><div><div class="strong">${t.title}</div><div class="floating-meta">${t.step} · ${t.left}</div></div></div><div><div class="progress-label"><span>${label}</span><b>${t.progress}%</b></div><div class="progress ${tone}"><span style="width:${t.progress}%"></span></div></div><button class="btn ${t.type==="backup"?"blue":"primary"}" data-action="jump-task-target" data-id="${t.id}">${t.type==="backup"?"去备份任务":"去导入导出"}</button>`}
+function toast(text){const area=$("#toastArea"); const node=document.createElement("div"); node.className="toast"; node.innerHTML=`${icon("check")}<span>${esc(text)}</span>`; area.appendChild(node); setTimeout(()=>node.remove(),2600)}
+function applyTheme(theme){state.theme = theme; document.documentElement.dataset.theme = theme; localStorage.setItem("wechat-backup-theme",theme)}
+function syncSidebar(force=false){const narrow=window.innerWidth<960; if(narrow) state.sidebarCollapsed=true; else if(force || !narrow) state.sidebarCollapsed=state.sidebarPreference; $("#appShell").classList.toggle("sidebar-collapsed", state.sidebarCollapsed)}
+function createTask(kind){const acct=currentAccount(); const map={backup:{title:`${acct.name} 手动备份`,type:"backup",label:"备份",scope:"全部会话",step:"正在查找聊天记录",left:"8 分钟"},import:{title:"导入旧电脑备份",type:"import",label:"导入",scope:"18 个会话 / 42,816 条消息",step:"正在保存聊天记录",left:"48 分钟"},export:{title:`聊天记录 ${state.exportFormat==="package"?"加密迁移包":"HTML 归档"}`,type:"export",label:"导出",scope:state.exportRange==="selected"?"指定会话":"指定范围",step:"正在收集聊天记录",left:"12 分钟"},restore:{title:"恢复到微信",type:"restore",label:"恢复",scope:"指定会话",step:"正在传输聊天记录",left:"8 分钟"}}; const base=map[kind]; tasks.unshift({id:"t"+Date.now(),account:acct.name,status:"running",statusLabel:base.step,progress:8,start:"刚刚",elapsed:"刚开始",path:"主力账号备份",errors:0,warnings:0,currentFile:"准备中",speed:"-",logs:[["info","刚刚",`已创建${base.label}任务`]],...base}); state.floatingDismissed=false}
+document.addEventListener("click",e=>{
+  const nav=e.target.closest(".nav-btn");
+  if(nav){state.view=nav.dataset.view; render(); return}
+  const el=e.target.closest("[data-action]");
+  if(!el || el.disabled) return;
+  const a=el.dataset.action;
+  if(a==="toggle-sidebar"){state.sidebarPreference=!state.sidebarCollapsed; state.sidebarCollapsed=!state.sidebarCollapsed; if(window.innerWidth<960){state.sidebarPreference=true; state.sidebarCollapsed=true} $("#appShell").classList.toggle("sidebar-collapsed",state.sidebarCollapsed); return}
+  if(a==="set-os"){$("#windowFrame").dataset.os=el.dataset.os; $$(".os-switch button").forEach(b=>b.classList.toggle("active",b===el)); render(); return}
+  if(a==="clear-search"){state.query=""; $("#globalSearch").value=""; render(); toast("已清空搜索"); return}
+  if(a==="switch-account"){state.currentAccount=el.dataset.id; toast("已切换到 "+currentAccount().name); render(); return}
+  if(a==="scan-account"){toast("正在重新扫描本机微信账号"); return}
+  if(a==="new-backup"){createTask("backup"); state.view="tasks"; toast("已创建备份任务"); render(); return}
+  if(a==="route-chats"){state.view="chats"; render(); return}
+  if(a==="route-tasks"){state.view="tasks"; render(); return}
+  if(a==="route-settings"){state.view="settings"; state.drawer=null; render(); return}
+  if(a==="route-restore"){state.view="restore"; render(); return}
+  if(a==="route-transfer-import"){state.view="transfer"; state.transferMode="import"; render(); return}
+  if(a==="route-transfer-export"){state.view="transfer"; state.transferMode="export"; render(); return}
+  if(a==="toggle-batch"){state.batch=!state.batch; if(!state.batch) state.selectedChats.clear(); render(); return}
+  if(a==="select-chat"){if(state.batch){state.selectedChats.has(el.dataset.id)?state.selectedChats.delete(el.dataset.id):state.selectedChats.add(el.dataset.id)} state.selectedChat=el.dataset.id; render(); return}
+  if(a==="toggle-chat-attachments"){state.chatFilters.attachments=!state.chatFilters.attachments; render(); return}
+  if(a==="set-chat-type"){state.chatFilters.type = state.chatFilters.type===el.dataset.type?"all":el.dataset.type; render(); return}
+  if(a==="set-chat-date"){state.chatFilters.date = el.dataset.date; render(); return}
+  if(a==="clear-chat-filters"){state.chatFilters={attachments:false,type:"all",date:"all"}; render(); return}
+  if(a==="select-contact"){state.selectedContact=el.dataset.id; render(); return}
+  if(a==="set-contact-category"){state.contactCategory=el.dataset.category; render(); return}
+  if(a==="jump-chat"){state.selectedChat=el.dataset.id || state.selectedChat; state.view="chats"; render(); return}
+  if(a==="open-drawer"){state.drawer=el.dataset.drawer; render(); return}
+  if(a==="close-drawer"){state.drawer=null; render(); return}
+  if(a==="open-task"){state.drawer="task"; state.drawerTaskId=el.dataset.id; render(); return}
+  if(a==="toggle-task"){const t=taskById(el.dataset.id); if(t){if(t.status==="running"){t.status="paused";t.statusLabel="已暂停，已完成部分会保留";t.left="已暂停";t.step="已暂停，已完成部分会保留";}else if(t.status==="paused"){t.status="running";t.statusLabel="继续处理中";t.left="5 分钟";t.step="正在从上次位置继续";} render()} return}
+  if(a==="cancel-task"){const t=taskById(el.dataset.id); if(t){t.status="failed";t.statusLabel="任务已取消";t.step="用户取消，已完成部分会保留";t.errors+=1; render(); toast("已取消任务，已完成部分会保留");} return}
+  if(a==="start-waiting"){const t=taskById(el.dataset.id); if(t){t.status="running";t.statusLabel="正在收集聊天记录";t.step="正在收集聊天记录";t.left="12 分钟"; render(); toast("任务已开始");} return}
+  if(a==="retry-task"){const t=taskById(el.dataset.id); if(t){t.status="running";t.statusLabel="正在重试";t.step="从失败位置继续处理";t.left="10 分钟";t.progress=Math.max(12,t.progress-20); render(); toast("已重新加入任务队列");} return}
+  if(a==="pause-all"){tasks=tasks.map(t=>t.status==="running"?{...t,status:"paused",statusLabel:"已暂停，已完成部分会保留",step:"已暂停，已完成部分会保留",left:"已暂停"}:t); render(); toast("已暂停所有进行中的任务"); return}
+  if(a==="set-transfer-mode"){state.transferMode=el.dataset.mode; render(); return}
+  if(a==="jump-step"){const n=Number(el.dataset.step); if(state.transferMode==="export") state.exportStep=n; else state.importStep=n; render(); return}
+  if(a==="step-back"){if(state.transferMode==="export") state.exportStep=Math.max(0,state.exportStep-1); else state.importStep=Math.max(0,state.importStep-1); render(); return}
+  if(a==="step-next"){
+    if(state.transferMode==="import"){
+      if(state.importStep===1 && !state.importFilesSelected){toast("请先选择文件或目录"); return}
+      if(state.importStep<4) state.importStep++;
+      else {createTask("import"); toast("导入任务已加入底部任务队列");}
+    } else {
+      if(state.exportStep===2 && state.exportFormat==="package" && !state.exportEncryptReady){toast("请先设置迁移包密码"); return}
+      if(state.exportStep===3 && !state.exportSavePath){toast("请先选择保存位置"); return}
+      if(state.exportStep<4) state.exportStep++;
+      else {createTask("export"); toast("导出任务已加入底部任务队列");}
+    }
+    render(); return
+  }
+  if(a==="set-import-source"){state.importSource=el.dataset.source; render(); return}
+  if(a==="choose-import-files"){state.importFilesSelected=true; toast("已选择导入来源"); render(); return}
+  if(a==="toggle-import-check"){state.importCheckPaused=!state.importCheckPaused; render(); return}
+  if(a==="set-import-strategy"){state.importStrategy=el.dataset.strategy; render(); return}
+  if(a==="set-import-attachment"){state.importAttachmentPolicy=el.dataset.policy; render(); return}
+  if(a==="set-export-range"){state.exportRange=el.dataset.range; render(); return}
+  if(a==="set-format"){state.exportFormat=el.dataset.value; render(); return}
+  if(a==="toggle-export-password"){state.exportEncryptReady=!state.exportEncryptReady; render(); toast(state.exportEncryptReady?"迁移包密码已设置":"已清除迁移包密码"); return}
+  if(a==="choose-path"){state.exportSavePath=true; toast("保存位置检查通过"); render(); return}
+  if(a==="set-restore-step"){state.restoreStep=Number(el.dataset.step); render(); return}
+  if(a==="restore-back"){state.restoreStep=Math.max(0,state.restoreStep-1); render(); return}
+  if(a==="restore-next"){if(state.restoreStep===1 && !state.restoreDeviceConnected){toast("请先连接目标设备"); return} if(state.restoreStep===3 && !state.restoreAck){toast("请先确认风险"); return} if(state.restoreStep<4){state.restoreStep++;} else {createTask("restore"); toast("恢复任务已创建，请保持目标设备在线");} render(); return}
+  if(a==="set-restore-range"){state.restoreRange=el.dataset.range; render(); return}
+  if(a==="set-restore-strategy"){state.restoreStrategy=el.dataset.strategy; render(); return}
+  if(a==="toggle-restore-ack"){state.restoreAck=!state.restoreAck; render(); return}
+  if(a==="toggle-theme"){applyTheme(state.theme==="dark"?"light":"dark"); render(); return}
+  if(a==="save-settings"){toast("设置已保存"); return}
+  if(a==="jump-task-target"){const t=taskById(el.dataset.id); state.view = t && t.type==="backup" ? "tasks" : "transfer"; render(); return}
+  if(a==="dismiss-floating"){state.floatingDismissed=true; render(); return}
+  if(a==="open-location"){toast("已打开文件夹"); return}
+  if(a==="copy-errors"){toast("错误信息已复制"); return}
+  if(a==="retry-chat-backup"){createTask("backup"); toast("已为当前会话创建补备份任务"); render(); return}
+  if(a==="jump-message"){const mark = $("#main mark"); if(mark){mark.scrollIntoView({block:"center"}); toast("已定位第一个命中");} else toast("当前没有搜索命中"); return}
+  toast("操作已记录")
 });
-
-function applyTheme(theme){
-  root.dataset.theme=theme;
-  localStorage.setItem('wechat-backup-theme',theme);
-  document.getElementById('themeLabel').textContent=theme==='dark'?'浅色模式':'暗黑模式';
-}
-const savedTheme=localStorage.getItem('wechat-backup-theme');
-applyTheme(savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
-
-document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
-document.getElementById('settingsThemeBtn').addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
-
-document.querySelectorAll('.account-row').forEach(row=>{
-  row.addEventListener('click',()=>{
-    document.querySelectorAll('.account-row').forEach(item=>item.classList.remove('active'));
-    row.classList.add('active');
-    document.getElementById('sideAvatar').textContent=row.dataset.avatar;
-    document.getElementById('sideAccountName').textContent=row.dataset.name;
-    document.getElementById('sideAccountMeta').textContent=row.dataset.meta;
-    document.getElementById('heroAvatar').textContent=row.dataset.avatar;
-    document.getElementById('heroName').textContent=row.dataset.name;
-    document.getElementById('heroId').textContent='微信号 '+row.dataset.meta;
-    document.getElementById('kpiMessages').textContent=row.dataset.messages;
-    document.getElementById('heroChats').textContent=row.dataset.chats;
-    document.getElementById('kpiBackup').textContent=row.dataset.backup;
-    showToast('已切换到 '+row.dataset.name);
-  });
-});
-
-const queue=document.getElementById('queue');
-document.getElementById('queueBtn').addEventListener('click',()=>queue.classList.toggle('open'));
-document.getElementById('closeQueue').addEventListener('click',()=>queue.classList.remove('open'));
-
-function addTask(){
-  const table=document.getElementById('taskTable');
-  const row=document.createElement('tr');
-  row.innerHTML='<td>新建导出任务</td><td>林小满</td><td>导出</td><td><span class="chip blue">排队中</span></td><td>刚刚</td><td><button class="btn flat">详情</button></td>';
-  table.prepend(row);
-  showToast('任务已加入队列');
-}
-document.getElementById('newTaskBtn').addEventListener('click',addTask);
-document.getElementById('startExportBtn').addEventListener('click',addTask);
-document.getElementById('sideStartExportBtn').addEventListener('click',addTask);
-
-const searchableText=Array.from(document.querySelectorAll('h1,h2,h3,.task-title,.list-title,.contact-card strong,.account-name,.account-title')).map(el=>el.textContent).join(' ');
-document.getElementById('globalSearch').addEventListener('input',event=>{
-  const value=event.target.value.trim();
-  const count=value?((searchableText.match(new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length):0;
-  document.getElementById('searchCount').textContent=count;
-  if(value&&count>0) showToast('找到 '+count+' 个匹配项');
-});
+$("#globalSearch").addEventListener("input",e=>{state.query=e.target.value.trim(); render()});
+$("#globalSearch").addEventListener("keydown",e=>{if(e.key==="Escape"){state.query=""; e.target.value=""; render(); toast("已清空搜索")} if(e.key==="Enter"){const mark=$("#main mark"); if(mark){mark.scrollIntoView({block:"center"}); toast("已定位第一个结果")}}});
+window.addEventListener("resize",()=>syncSidebar());
+setInterval(()=>{let changed=false;tasks=tasks.map(t=>{if(t.status==="running"&&t.progress<100){const next=Math.min(100,t.progress+(t.type==="backup"?2:3)); changed=true; return {...t,progress:next,left:next===100?"完成":Math.max(1,Math.ceil((100-next)/8))+" 分钟",status:next===100?"done":t.status,statusLabel:next===100?"任务完成":t.statusLabel,step:next===100?"任务完成":t.step};}return t}); if(changed) render();},2200);
+applyTheme(localStorage.getItem("wechat-backup-theme") || document.documentElement.dataset.theme);
+syncSidebar(true);
+render();
 </script>
 </body>
 </html>

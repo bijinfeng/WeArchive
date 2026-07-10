@@ -3,6 +3,7 @@ export type WeArchiveViewId =
   | "records"
   | "backup"
   | "transfer"
+  | "restore"
   | "settings";
 
 export interface WeArchiveOverviewAccount {

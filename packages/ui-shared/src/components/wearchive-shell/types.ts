@@ -1,10 +1,13 @@
 import type {
+  WeArchiveArchiveStatus,
+  WeArchiveIssue,
   WeArchiveOverviewAccount,
   WeArchiveOverviewStats,
   WeArchiveOverviewTask,
   WeArchiveViewId,
 } from "@we-archive/core/types";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type WeArchiveRuntimePlatform =
   | "darwin"
@@ -21,6 +24,8 @@ export interface WeArchiveWindowControls {
 
 export interface WeArchiveShellProps {
   account?: WeArchiveOverviewAccount | null;
+  archiveStatus?: WeArchiveArchiveStatus | undefined;
+  issues?: WeArchiveIssue[] | undefined;
   stats: WeArchiveOverviewStats;
   tasks?: WeArchiveOverviewTask[];
   isLoading?: boolean;
@@ -32,7 +37,8 @@ export interface WeArchiveShellProps {
   runtimePlatform?: WeArchiveRuntimePlatform;
   windowControls?: WeArchiveWindowControls;
   onActiveViewChange?: (viewId: WeArchiveViewId) => void;
-  onBackupAction?: () => void | Promise<void>;
+  onBackupAction?: (() => void | Promise<void>) | undefined;
+  children?: ReactNode;
 }
 
 export type NavItem = {

@@ -1,19 +1,13 @@
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import type { WeArchiveViewId } from "@we-archive/core/types";
 import {
-  EMPTY_OVERVIEW_STATS,
-  normalizeOverviewStats,
-} from "@we-archive/core/utils";
-import {
+  getWeArchivePathFromView,
+  getWeArchiveViewFromPathname,
   type WeArchiveRuntimePlatform,
   WeArchiveShell,
 } from "@we-archive/ui-shared/components";
-import {
-  useAccount,
-  useBackupTasks,
-  useDataStats,
-} from "@we-archive/ui-shared/hooks";
-import { useCallback, useMemo } from "react";
+import { useWeArchiveData } from "@we-archive/ui-shared/hooks";
+import { useCallback } from "react";
 
 type ElectronRuntimeBridge = {
   runtime?: {
@@ -26,63 +20,42 @@ type ElectronRuntimeBridge = {
   };
 };
 
-const ROUTE_TO_VIEW: Record<string, WeArchiveViewId> = {
-  "/": "overview",
-  "/chat-records": "records",
-  "/backup-tasks": "backup",
-  "/import-export": "transfer",
-  "/settings": "settings",
-};
-
-const VIEW_TO_ROUTE: Record<WeArchiveViewId, string> = {
-  overview: "/",
-  records: "/chat-records",
-  backup: "/backup-tasks",
-  transfer: "/import-export",
-  settings: "/settings",
-};
-
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
-  const accountQuery = useAccount();
-  const statsQuery = useDataStats();
-  const tasksQuery = useBackupTasks();
+  const archiveData = useWeArchiveData();
   const electronBridge = getElectronBridge();
-  const activeView = ROUTE_TO_VIEW[location.pathname] ?? "overview";
-  const stats = useMemo(
-    () => normalizeOverviewStats(statsQuery.data ?? EMPTY_OVERVIEW_STATS),
-    [statsQuery.data],
-  );
-  const error = getQueryErrorMessage(
-    accountQuery.error,
-    statsQuery.error,
-    tasksQuery.error,
-  );
+  const activeView = getWeArchiveViewFromPathname(location.pathname);
+  const error = getQueryErrorMessage(archiveData.error);
 
   const goToView = useCallback(
     (viewId: WeArchiveViewId) => {
-      void navigate({ to: VIEW_TO_ROUTE[viewId] });
+      void navigate({ to: getWeArchivePathFromView(viewId) });
     },
     [navigate],
   );
 
   return (
     <WeArchiveShell
-      account={accountQuery.data ?? null}
-      stats={stats}
-      tasks={tasksQuery.data ?? []}
-      isLoading={
-        accountQuery.isLoading || statsQuery.isLoading || tasksQuery.isLoading
-      }
+      account={archiveData.account}
+      archiveStatus={archiveData.archiveStatus}
+      issues={archiveData.issues}
+      stats={archiveData.stats}
+      tasks={archiveData.tasks}
+      isLoading={archiveData.isLoading}
       error={error}
       activeView={activeView}
       chrome="desktop"
       runtimePlatform={getRuntimePlatform(electronBridge)}
       windowControls={electronBridge?.windowControls}
       onActiveViewChange={goToView}
-      onBackupAction={() => goToView("backup")}
-    />
+      onBackupAction={async () => {
+        await archiveData.startBackup();
+        goToView("backup");
+      }}
+    >
+      <Outlet />
+    </WeArchiveShell>
   );
 }
 

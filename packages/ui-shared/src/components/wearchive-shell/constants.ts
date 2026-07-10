@@ -4,6 +4,7 @@ import {
   FolderArchive,
   Home,
   MessageCircle,
+  RotateCcw,
   Settings,
 } from "lucide-react";
 
@@ -23,7 +24,10 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     title: "备份",
-    items: [{ id: "backup", label: "备份任务", icon: FolderArchive }],
+    items: [
+      { id: "backup", label: "备份任务", icon: FolderArchive },
+      { id: "restore", label: "恢复管理", icon: RotateCcw },
+    ],
   },
   {
     title: "系统",
@@ -36,6 +40,7 @@ export const VIEW_TITLES: Record<WeArchiveViewId, string> = {
   records: "聊天记录",
   backup: "备份任务",
   transfer: "导入导出",
+  restore: "恢复管理",
   settings: "设置",
 };
 
@@ -44,5 +49,6 @@ export const VIEW_PLACEHOLDERS: Record<WeArchiveViewId, string> = {
   records: "搜索联系人、群聊、消息或文件",
   backup: "搜索任务、账号或保存位置",
   transfer: "搜索导入文件、导出任务",
+  restore: "搜索恢复点、目标账号或风险项",
   settings: "搜索设置项",
 };

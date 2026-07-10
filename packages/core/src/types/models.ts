@@ -47,7 +47,13 @@ export type MessageType =
   | "link"
   | "miniprogram"
   | "transfer"
-  | "system";
+  | "system"
+  | "location"
+  | "contact-card"
+  | "group-notice"
+  | "merged"
+  | "unknown"
+  | "red-packet";
 
 /** 消息 */
 export interface Message {
@@ -60,6 +66,9 @@ export interface Message {
   content?: string;
   timestamp: Date;
   hasAttachment: boolean;
+  stableId?: string;
+  sourceId?: string;
+  sourceHash?: string;
   rawPayload?: string;
   createdAt: Date;
 }
@@ -77,6 +86,10 @@ export interface Attachment {
   filePath?: string;
   checksum?: string;
   backupStatus: BackupStatus;
+  stableId?: string;
+  sourceId?: string;
+  sourceHash?: string;
+  rawPayload?: string;
   createdAt: Date;
 }
 

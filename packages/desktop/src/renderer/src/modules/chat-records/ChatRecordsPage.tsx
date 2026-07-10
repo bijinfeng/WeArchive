@@ -1,3 +1,5 @@
+import { WeArchiveRoutePage } from "@we-archive/ui-shared/components";
+
 export function ChatRecordsPage() {
-  return null;
+  return <WeArchiveRoutePage viewId="records" />;
 }

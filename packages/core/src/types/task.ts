@@ -18,6 +18,14 @@ export type TaskStatus =
 export interface BackupTask {
   id: number;
   accountId: number;
+  title?: string;
+  accountName?: string;
+  scope?: string;
+  currentFile?: string | null;
+  speed?: string | null;
+  remainingTime?: string | null;
+  processedMessages?: number | null;
+  processedAttachments?: number | null;
   status: TaskStatus;
   progress: number | null; // 0-100
   currentStep: string | null;

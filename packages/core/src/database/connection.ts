@@ -46,10 +46,44 @@ function initSchema(sqlite: SqliteDatabase): void {
       created_at INTEGER NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS archives (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      archive_id TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      source_type TEXT NOT NULL,
+      source_version TEXT,
+      imported_at INTEGER,
+      created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS contacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      account_id INTEGER NOT NULL,
+      stable_id TEXT NOT NULL,
+      wxid TEXT NOT NULL,
+      nickname TEXT NOT NULL,
+      avatar TEXT,
+      type TEXT NOT NULL DEFAULT 'personal',
+      remark TEXT,
+      source_id TEXT,
+      source_hash TEXT,
+      raw_payload TEXT,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_contacts_account
+      ON contacts(account_id);
+    CREATE INDEX IF NOT EXISTS idx_contacts_wxid
+      ON contacts(wxid);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_contacts_account_stable
+      ON contacts(account_id, stable_id);
+
     CREATE TABLE IF NOT EXISTS conversations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       account_id INTEGER NOT NULL,
       conversation_id TEXT NOT NULL UNIQUE,
+      stable_id TEXT,
       type TEXT NOT NULL,
       name TEXT NOT NULL,
       avatar TEXT,
@@ -58,6 +92,9 @@ function initSchema(sqlite: SqliteDatabase): void {
       last_message_at INTEGER,
       backup_status TEXT DEFAULT 'complete',
       is_favorite INTEGER DEFAULT 0,
+      source_id TEXT,
+      source_hash TEXT,
+      raw_payload TEXT,
       created_at INTEGER NOT NULL,
       FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
     );
@@ -70,6 +107,7 @@ function initSchema(sqlite: SqliteDatabase): void {
     CREATE TABLE IF NOT EXISTS messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       conversation_id INTEGER NOT NULL,
+      stable_id TEXT,
       message_id TEXT,
       sender_wxid TEXT,
       sender_name TEXT,
@@ -78,6 +116,8 @@ function initSchema(sqlite: SqliteDatabase): void {
       timestamp INTEGER NOT NULL,
       has_attachment INTEGER DEFAULT 0,
       raw_payload TEXT,
+      source_id TEXT,
+      source_hash TEXT,
       created_at INTEGER NOT NULL,
       FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
     );
@@ -94,12 +134,16 @@ function initSchema(sqlite: SqliteDatabase): void {
     CREATE TABLE IF NOT EXISTS attachments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       message_id INTEGER NOT NULL,
+      stable_id TEXT,
       type TEXT NOT NULL,
       filename TEXT,
       file_size INTEGER,
       file_path TEXT,
       checksum TEXT,
       backup_status TEXT DEFAULT 'complete',
+      source_id TEXT,
+      source_hash TEXT,
+      raw_payload TEXT,
       created_at INTEGER NOT NULL,
       FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
     );
@@ -123,6 +167,78 @@ function initSchema(sqlite: SqliteDatabase): void {
       warning_count INTEGER DEFAULT 0,
       FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
     );
+
+    CREATE INDEX IF NOT EXISTS idx_backup_tasks_status_date
+      ON backup_tasks(status, started_at);
+
+    CREATE TABLE IF NOT EXISTS import_jobs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      archive_id INTEGER,
+      status TEXT NOT NULL,
+      source_type TEXT NOT NULL,
+      source_path TEXT,
+      summary_json TEXT,
+      warning_count INTEGER DEFAULT 0,
+      unknown_type_count INTEGER DEFAULT 0,
+      started_at INTEGER NOT NULL,
+      completed_at INTEGER,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (archive_id) REFERENCES archives(id) ON DELETE SET NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_import_jobs_status_date
+      ON import_jobs(status, started_at);
+
+    CREATE TABLE IF NOT EXISTS export_jobs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      archive_id INTEGER,
+      status TEXT NOT NULL,
+      format TEXT NOT NULL,
+      target_path TEXT,
+      summary_json TEXT,
+      warning_count INTEGER DEFAULT 0,
+      started_at INTEGER NOT NULL,
+      completed_at INTEGER,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (archive_id) REFERENCES archives(id) ON DELETE SET NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_export_jobs_status_date
+      ON export_jobs(status, started_at);
+
+    CREATE TABLE IF NOT EXISTS task_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      task_id INTEGER,
+      import_job_id INTEGER,
+      export_job_id INTEGER,
+      level TEXT NOT NULL,
+      message TEXT NOT NULL,
+      metadata_json TEXT,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (task_id) REFERENCES backup_tasks(id) ON DELETE SET NULL,
+      FOREIGN KEY (import_job_id) REFERENCES import_jobs(id) ON DELETE SET NULL,
+      FOREIGN KEY (export_job_id) REFERENCES export_jobs(id) ON DELETE SET NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_task_logs_task_date
+      ON task_logs(task_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_task_logs_import_job_date
+      ON task_logs(import_job_id, created_at);
+
+    CREATE TABLE IF NOT EXISTS restore_points (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      archive_id INTEGER,
+      name TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'available',
+      summary_json TEXT,
+      risk_json TEXT,
+      checked_at INTEGER,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (archive_id) REFERENCES archives(id) ON DELETE SET NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_restore_points_archive_date
+      ON restore_points(archive_id, created_at);
 
     CREATE TABLE IF NOT EXISTS backup_watermarks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -151,7 +267,52 @@ function initSchema(sqlite: SqliteDatabase): void {
     );
   `);
 
+  ensureColumn(sqlite, "conversations", "stable_id", "TEXT");
+  ensureColumn(sqlite, "conversations", "source_id", "TEXT");
+  ensureColumn(sqlite, "conversations", "source_hash", "TEXT");
+  ensureColumn(sqlite, "conversations", "raw_payload", "TEXT");
+  ensureColumn(sqlite, "messages", "stable_id", "TEXT");
+  ensureColumn(sqlite, "messages", "source_id", "TEXT");
+  ensureColumn(sqlite, "messages", "source_hash", "TEXT");
+  ensureColumn(sqlite, "attachments", "stable_id", "TEXT");
+  ensureColumn(sqlite, "attachments", "source_id", "TEXT");
+  ensureColumn(sqlite, "attachments", "source_hash", "TEXT");
+  ensureColumn(sqlite, "attachments", "raw_payload", "TEXT");
+
+  sqlite.exec(`
+    CREATE INDEX IF NOT EXISTS idx_conversations_account_type_date
+      ON conversations(account_id, type, last_message_at);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_conversations_stable
+      ON conversations(stable_id);
+    CREATE INDEX IF NOT EXISTS idx_messages_conversation_date_type_sender
+      ON messages(conversation_id, timestamp, type, sender_wxid);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_messages_stable
+      ON messages(stable_id);
+    CREATE INDEX IF NOT EXISTS idx_attachments_type_status
+      ON attachments(type, backup_status);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_attachments_stable
+      ON attachments(stable_id);
+  `);
+
   initFts(sqlite);
+}
+
+function ensureColumn(
+  sqlite: SqliteDatabase,
+  tableName: string,
+  columnName: string,
+  definition: string,
+): void {
+  const columns = sqlite
+    .prepare(`PRAGMA table_info(${tableName})`)
+    .all() as Array<{ name: string }>;
+  const exists = columns.some((column) => column.name === columnName);
+
+  if (!exists) {
+    sqlite.exec(
+      `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`,
+    );
+  }
 }
 
 /**

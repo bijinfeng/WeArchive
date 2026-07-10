@@ -22,6 +22,30 @@
       "import": "./dist/database/index.mjs",
       "require": "./dist/database/index.cjs"
     },
+    "./archive": {
+      "types": {
+        "import": "./dist/archive/index.d.mts",
+        "require": "./dist/archive/index.d.cts"
+      },
+      "import": "./dist/archive/index.mjs",
+      "require": "./dist/archive/index.cjs"
+    },
+    "./repositories": {
+      "types": {
+        "import": "./dist/repositories/index.d.mts",
+        "require": "./dist/repositories/index.d.cts"
+      },
+      "import": "./dist/repositories/index.mjs",
+      "require": "./dist/repositories/index.cjs"
+    },
+    "./exporters": {
+      "types": {
+        "import": "./dist/exporters/index.d.mts",
+        "require": "./dist/exporters/index.d.cts"
+      },
+      "import": "./dist/exporters/index.mjs",
+      "require": "./dist/exporters/index.cjs"
+    },
     "./services": {
       "types": {
         "import": "./dist/services/index.d.mts",
@@ -49,13 +73,17 @@
   },
   "scripts": {
     "build": "tsdown",
-    "test": "pnpm run build && node --input-type=module -e \"for (const entry of ['@we-archive/core','@we-archive/core/database','@we-archive/core/services','@we-archive/core/types','@we-archive/core/utils']) { const mod = await import(entry); if (!mod) throw new Error(entry) }\"",
+    "test": "vitest run",
+    "test:exports": "pnpm run build && node --input-type=module -e \"for (const entry of ['@we-archive/core','@we-archive/core/database','@we-archive/core/archive','@we-archive/core/repositories','@we-archive/core/exporters','@we-archive/core/services','@we-archive/core/types','@we-archive/core/utils']) { const mod = await import(entry); if (!mod) throw new Error(entry) }\"",
     "type-check": "tsc --noEmit"
   },
   "tsdown": {
     "entry": {
       "index": "src/index.ts",
       "database/index": "src/database/index.ts",
+      "archive/index": "src/archive/index.ts",
+      "repositories/index": "src/repositories/index.ts",
+      "exporters/index": "src/exporters/index.ts",
       "services/index": "src/services/index.ts",
       "types/index": "src/types/index.ts",
       "utils/index": "src/utils/index.ts"
@@ -81,6 +109,7 @@
     "@we-archive/tsconfig": "workspace:*",
     "drizzle-kit": "catalog:database",
     "tsdown": "catalog:build",
-    "typescript": "catalog:types"
+    "typescript": "catalog:types",
+    "vitest": "catalog:test"
   }
 }

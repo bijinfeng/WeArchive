@@ -8,12 +8,9 @@ import {
   SideNavItem,
   SideNavSection,
 } from "@astryxdesign/core/SideNav";
-import { VStack } from "@astryxdesign/core/Stack";
 import { StatusDot } from "@astryxdesign/core/StatusDot";
-import { Text } from "@astryxdesign/core/Text";
 import type {
   WeArchiveOverviewAccount,
-  WeArchiveOverviewStats,
   WeArchiveViewId,
 } from "@we-archive/core/types";
 import { HardDrive, ShieldCheck } from "lucide-react";
@@ -21,16 +18,16 @@ import type { RefObject } from "react";
 
 import { styles, sx } from "./styles";
 import type { NavSection } from "./types";
-import { formatStorage } from "./utils";
 
 interface WeArchiveSideNavProps {
   account: WeArchiveOverviewAccount | null;
   activeView: WeArchiveViewId;
   error: string | null;
+  isCollapsed: boolean;
   isDesktopChrome: boolean;
   navSections: NavSection[];
   sideNavHandleRef: RefObject<SideNavImperativeCollapseHandle | null>;
-  stats: WeArchiveOverviewStats;
+  onCollapsedChange: (isCollapsed: boolean) => void;
   onActiveViewChange: (viewId: WeArchiveViewId) => void;
 }
 
@@ -38,12 +35,19 @@ export function WeArchiveSideNav({
   account,
   activeView,
   error,
+  isCollapsed,
   isDesktopChrome,
   navSections,
   sideNavHandleRef,
-  stats,
+  onCollapsedChange,
   onActiveViewChange,
 }: WeArchiveSideNavProps) {
+  const statusLabel = error
+    ? "服务异常"
+    : account
+      ? `${account.nickname} 已连接`
+      : "等待导入账号";
+
   return (
     <SideNav
       className={sx(styles.sideNav, isDesktopChrome && styles.desktopSideNav)}
@@ -51,6 +55,8 @@ export function WeArchiveSideNav({
       collapsible={{
         buttonLabel: "折叠侧边栏",
         hasButton: false,
+        isCollapsed,
+        onCollapsedChange,
       }}
       header={
         <SideNavHeading
@@ -67,7 +73,7 @@ export function WeArchiveSideNav({
       footer={
         <SideNavSection title="运行状态" isHeaderHidden>
           <SideNavItem
-            label={error ? "服务异常" : "服务已连接"}
+            label={isCollapsed ? (error ? "异常" : "正常") : statusLabel}
             icon={HardDrive}
             endContent={
               <StatusDot
@@ -76,14 +82,6 @@ export function WeArchiveSideNav({
               />
             }
           />
-          <VStack gap={1} className={sx(styles.libraryMeta)}>
-            <Text type="supporting" maxLines={1}>
-              {account?.nickname ?? "暂无账号"}
-            </Text>
-            <Text type="supporting" color="secondary" maxLines={1}>
-              {formatStorage(stats.storageSize)}
-            </Text>
-          </VStack>
         </SideNavSection>
       }
     >

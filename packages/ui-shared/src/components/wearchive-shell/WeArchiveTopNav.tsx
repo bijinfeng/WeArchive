@@ -8,9 +8,10 @@ import { HStack, Stack, VStack } from "@astryxdesign/core/Stack";
 import { Text } from "@astryxdesign/core/Text";
 import { TextInput } from "@astryxdesign/core/TextInput";
 import { Token } from "@astryxdesign/core/Token";
+import { Tooltip } from "@astryxdesign/core/Tooltip";
 import { TopNav } from "@astryxdesign/core/TopNav";
 import type { WeArchiveViewId } from "@we-archive/core/types";
-import { Menu, Plus, Search } from "lucide-react";
+import { PanelLeftClose, Plus, Search } from "lucide-react";
 import type { RefObject } from "react";
 
 import { VIEW_PLACEHOLDERS } from "./constants";
@@ -25,10 +26,12 @@ interface WeArchiveTopNavProps {
   isWindowsClient: boolean;
   platformLabel: string;
   query: string;
+  searchResultCount: number | null;
   sideNavHandleRef: RefObject<SideNavImperativeCollapseHandle | null>;
   windowControls: WeArchiveWindowControls | undefined;
   onBackupAction: () => void;
   onQueryChange: (query: string) => void;
+  onSearchSubmit: () => void;
 }
 
 export function WeArchiveTopNav({
@@ -38,11 +41,18 @@ export function WeArchiveTopNav({
   isWindowsClient,
   platformLabel,
   query,
+  searchResultCount,
   sideNavHandleRef,
   windowControls,
   onBackupAction,
   onQueryChange,
+  onSearchSubmit,
 }: WeArchiveTopNavProps) {
+  const searchLabel =
+    query && searchResultCount !== null
+      ? `找到 ${searchResultCount} 项`
+      : "全部";
+
   return (
     <TopNav
       className={sx(styles.topNav, isDesktopChrome && styles.desktopTopNav)}
@@ -53,26 +63,36 @@ export function WeArchiveTopNav({
             <Stack className={sx(styles.nativeTrafficSpace)} aria-hidden />
           ) : null}
           {isWindowsClient ? (
-            <Text type="supporting" weight="bold" maxLines={1}>
+            <Text
+              type="supporting"
+              weight="bold"
+              className={sx(styles.singleLineText)}
+            >
               WeArchive {platformLabel}
             </Text>
           ) : (
             <VStack gap={0}>
-              <Text weight="bold" maxLines={1}>
+              <Text weight="bold" className={sx(styles.singleLineText)}>
                 WeArchive
               </Text>
-              <Text type="supporting" color="secondary" maxLines={1}>
+              <Text
+                type="supporting"
+                color="secondary"
+                className={sx(styles.singleLineText)}
+              >
                 {platformLabel}
               </Text>
             </VStack>
           )}
-          <SideNavCollapseButton
-            className={sx(styles.headerControl)}
-            handleRef={sideNavHandleRef}
-            label="折叠侧边栏"
-          >
-            <Icon icon={Menu} size="sm" />
-          </SideNavCollapseButton>
+          <Tooltip content="切换侧边栏" placement="below">
+            <SideNavCollapseButton
+              className={sx(styles.headerControl, styles.sidebarToggle)}
+              handleRef={sideNavHandleRef}
+              label="切换侧边栏"
+            >
+              <Icon icon={PanelLeftClose} size="sm" />
+            </SideNavCollapseButton>
+          </Tooltip>
         </HStack>
       }
       centerContent={
@@ -90,10 +110,16 @@ export function WeArchiveTopNav({
             placeholder={VIEW_PLACEHOLDERS[activeView]}
             value={query}
             onChange={onQueryChange}
+            onEnter={onSearchSubmit}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                onQueryChange("");
+              }
+            }}
             hasClear
           />
           <Token
-            label={query ? "找到 0 项" : "全部"}
+            label={searchLabel}
             color={query ? "green" : "gray"}
             size="sm"
           />

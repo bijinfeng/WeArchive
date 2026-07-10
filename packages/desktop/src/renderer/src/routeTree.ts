@@ -3,6 +3,7 @@ import { BackupTasksPage } from "./modules/backup-tasks/BackupTasksPage";
 import { ChatRecordsPage } from "./modules/chat-records/ChatRecordsPage";
 import { HomePage } from "./modules/home/HomePage";
 import { ImportExportPage } from "./modules/import-export/ImportExportPage";
+import { RestorePage } from "./modules/restore/RestorePage";
 import { SettingsPage } from "./modules/settings/SettingsPage";
 import { AppShell } from "./shared/components/AppShell";
 
@@ -39,6 +40,13 @@ const importExportRoute = createRoute({
   component: ImportExportPage,
 });
 
+// Restore route
+const restoreRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/restore",
+  component: RestorePage,
+});
+
 // Settings route
 const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -52,5 +60,6 @@ export const routeTree = rootRoute.addChildren([
   chatRecordsRoute,
   backupTasksRoute,
   importExportRoute,
+  restoreRoute,
   settingsRoute,
 ]);

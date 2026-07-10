@@ -1,0 +1,55 @@
+diff --git a/dist/Text/useTruncation.js b/dist/Text/useTruncation.js
+index 88e38acb82597dd452c055fdb31f568198eef6fe..ea51a50cc820b51f361485a1f6ac47ebf58117a7 100644
+--- a/dist/Text/useTruncation.js
++++ b/dist/Text/useTruncation.js
+@@ -79,8 +79,12 @@ export function useTruncation(options) {
+     if (elementRef.current) {
+       unobserveResize(elementRef.current);
+     }
++    if (!element) {
++      elementRef.current = null;
++      return;
++    }
+     elementRef.current = element;
+-    if (element && maxLines > 0) {
++    if (maxLines > 0) {
+       // Observe via shared singleton (if available).
+       // observeResize fires the callback once on registration,
+       // so no separate initial check is needed.
+@@ -91,9 +95,6 @@ export function useTruncation(options) {
+       } else {
+         checkTruncation(element);
+       }
+-    } else {
+-      setIsTruncated(false);
+-      setFullText('');
+     }
+   }, [maxLines, checkTruncation]);
+   return {
+diff --git a/src/Text/useTruncation.ts b/src/Text/useTruncation.ts
+index 4de0ddbda0da3b7c9b8676d35ce96d1e4fa36646..7a181e10223f1765f798564ca9a07fbff4d17622 100644
+--- a/src/Text/useTruncation.ts
++++ b/src/Text/useTruncation.ts
+@@ -117,6 +117,9 @@ export function useTruncation(
+-      elementRef.current = element;
+-
+-      if (element && maxLines > 0) {
++      if (!element) {
++        elementRef.current = null;
++        return;
++      }
++      elementRef.current = element;
++      if (maxLines > 0) {
+         // Observe via shared singleton (if available).
+         // observeResize fires the callback once on registration,
+         // so no separate initial check is needed.
+@@ -126,9 +129,6 @@ export function useTruncation(
+         } else {
+           checkTruncation(element);
+         }
+-      } else {
+-        setIsTruncated(false);
+-        setFullText('');
+       }
+     },
+     [maxLines, checkTruncation],

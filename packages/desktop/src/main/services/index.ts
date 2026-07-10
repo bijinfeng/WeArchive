@@ -4,6 +4,7 @@ import {
   initDatabase,
   LogService,
   SearchService,
+  seedFixtureArchiveIfEmpty,
   TaskScheduler,
 } from "@we-archive/core";
 import { app } from "electron";
@@ -39,6 +40,10 @@ class ServiceContainer {
 
     // 初始化数据库
     initDatabase(dbPath);
+
+    if (!app.isPackaged || process.env.WEARCHIVE_SEED_FIXTURE === "1") {
+      await seedFixtureArchiveIfEmpty();
+    }
 
     // 初始化服务
     this.searchService = new SearchService();

@@ -21,6 +21,11 @@ export const fileRoutes = {
     path: "/import-export",
     children: undefined,
   },
+  "/restore": {
+    id: "/restore",
+    path: "/restore",
+    children: undefined,
+  },
   "/settings": {
     id: "/settings",
     path: "/settings",

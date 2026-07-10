@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import fastifyCors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 import { initDatabase } from "@we-archive/core/database";
+import { seedFixtureArchiveIfEmpty } from "@we-archive/core/repositories";
 import Fastify from "fastify";
 
 import { registerRoutes } from "./routes";
@@ -33,6 +34,12 @@ mkdirSync(dataDir, { recursive: true });
 const dbPath = process.env.DB_PATH || join(dataDir, "wearchive.db");
 try {
   initDatabase(dbPath);
+  if (
+    process.env.WEARCHIVE_SEED_FIXTURE === "1" ||
+    process.env.NODE_ENV !== "production"
+  ) {
+    await seedFixtureArchiveIfEmpty();
+  }
   server.log.info(`Database initialized at ${dbPath}`);
 } catch (error) {
   server.log.error(
@@ -55,7 +62,7 @@ server.register(
 registerStaticUi();
 
 // 启动服务器
-const port = Number(process.env.PORT) || 7890;
+const port = Number(process.env.PORT) || 18790;
 const host = process.env.HOST || "0.0.0.0";
 const socketPath = process.env.SOCKET_PATH;
 

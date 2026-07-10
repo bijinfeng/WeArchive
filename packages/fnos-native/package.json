@@ -17,6 +17,7 @@
   "dependencies": {
     "@fastify/cors": "catalog:server",
     "@fastify/static": "catalog:server",
+    "@tanstack/react-query": "catalog:tanstack",
     "@we-archive/core": "workspace:*",
     "@we-archive/ui-shared": "workspace:*",
     "better-sqlite3": "catalog:database",
@@ -27,6 +28,7 @@
     "@astryxdesign/build": "catalog:astryx",
     "@astryxdesign/core": "catalog:astryx",
     "@astryxdesign/theme-neutral": "catalog:astryx",
+    "@tanstack/react-router": "catalog:tanstack",
     "@types/better-sqlite3": "catalog:types",
     "@types/node": "catalog:types",
     "@types/react": "catalog:types",

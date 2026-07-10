@@ -1,13 +1,22 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "@astryxdesign/core/reset.css";
-import "@astryxdesign/theme-neutral/theme.css";
 import "../../node_modules/@astryxdesign/core/dist/astryx.css";
 
-import { App } from "./App";
+import { Router } from "./router";
 
 const rootElement = document.getElementById("root");
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 30,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 if (!rootElement) {
   throw new Error("Root element #root was not found");
@@ -15,6 +24,8 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <Router />
+    </QueryClientProvider>
   </StrictMode>,
 );

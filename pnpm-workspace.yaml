@@ -86,3 +86,6 @@ catalogs:
 
 minimumReleaseAgeExclude:
   - electron@43.1.0
+
+patchedDependencies:
+  '@astryxdesign/core@0.1.4': patches/@astryxdesign__core@0.1.4.patch

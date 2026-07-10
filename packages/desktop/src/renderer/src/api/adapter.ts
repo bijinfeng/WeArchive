@@ -1,83 +1,56 @@
-import type { TaskProgressEvent } from "@we-archive/core/services";
-import type {
-  Account,
-  BackupTask,
-  Conversation,
-  DataStats,
-} from "@we-archive/core/types";
 import type { ApiAdapter } from "@we-archive/ui-shared/hooks";
-
-// 从 preload 暴露的 API
-declare global {
-  interface Window {
-    electron: {
-      database: {
-        getAccount: () => Promise<Account | null>;
-        getStats: () => Promise<DataStats>;
-        getConversations: (params: {
-          limit?: number;
-          offset?: number;
-        }) => Promise<{ items: Conversation[]; total: number }>;
-      };
-      backup: {
-        getTasks: () => Promise<BackupTask[]>;
-        start: (params: {
-          name: string;
-          accountId: number;
-          savePath: string;
-        }) => Promise<BackupTask>;
-        pause: (taskId: number) => Promise<void>;
-        resume: (taskId: number) => Promise<void>;
-        cancel: (taskId: number) => Promise<void>;
-        onProgress: (
-          callback: (event: TaskProgressEvent) => void,
-        ) => () => void;
-      };
-      file: {
-        selectFile: (options?: {
-          title?: string;
-          filters?: Array<{ name: string; extensions: string[] }>;
-        }) => Promise<string | null>;
-        selectDirectory: (title?: string) => Promise<string | null>;
-        isReadable: (path: string) => Promise<boolean>;
-        isWritable: (path: string) => Promise<boolean>;
-        getSize: (path: string) => Promise<number>;
-        getDirectorySize: (path: string) => Promise<number>;
-        getAvailableSpace: (path: string) => Promise<number>;
-      };
-    };
-  }
-}
 
 /**
  * Electron IPC 适配器
  */
 export const electronAdapter: ApiAdapter = {
-  database: {
-    getAccount: () => window.electron.database.getAccount(),
-    getStats: () => window.electron.database.getStats(),
-    async getConversations(params) {
-      const result = await window.electron.database.getConversations({
-        limit: params.limit,
-        offset: params.offset,
-      });
-      return {
-        items: result.items as Conversation[],
-        total: result.total,
-      };
-    },
+  overview: {
+    getData: () => window.electron.overview.getData(),
+    seedFixture: () => window.electron.overview.seedFixture(),
   },
-  backup: {
-    getTasks: () => window.electron.backup.getTasks(),
-    start: () =>
-      window.electron.backup.start({
-        name: "手动备份",
-        accountId: 1,
-        savePath: "",
-      }),
+  conversations: {
+    list: (params) => window.electron.conversations.list(params),
+    getDetail: (conversationId) =>
+      window.electron.conversations.getDetail(conversationId),
+  },
+  messages: {
+    list: (params) => window.electron.messages.list(params),
+  },
+  tasks: {
+    list: () => window.electron.tasks.list(),
+    create: (input) => window.electron.tasks.create(input),
+    start: (taskId) => window.electron.tasks.start(taskId),
+    pause: (taskId) => window.electron.tasks.pause(taskId),
+    resume: (taskId) => window.electron.tasks.resume(taskId),
+    cancel: (taskId) => window.electron.tasks.cancel(taskId),
+    retry: (taskId) => window.electron.tasks.retry(taskId),
+    getDetail: (taskId) => window.electron.tasks.getDetail(taskId),
+    listLogs: (params) => window.electron.tasks.listLogs(params),
+  },
+  transfer: {
+    planImport: (input) => window.electron.transfer.planImport(input),
+    planExport: (input) => window.electron.transfer.planExport(input),
+    executeImport: (input) => window.electron.transfer.executeImport(input),
+    executeExport: (input) => window.electron.transfer.executeExport(input),
   },
   settings: {
-    get: async () => null,
-    set: async () => true,
+    get: (key) => window.electron.settings.get(key),
+    set: (key, value) => window.electron.settings.set(key, value),
+  },
+  restore: {
+    listPoints: () => window.electron.restore.listPoints(),
+    checkPoint: (restorePointId) =>
+      window.electron.restore.checkPoint(restorePointId),
+    previewStrategy: (input) => window.electron.restore.previewStrategy(input),
+    execute: (input) => window.electron.restore.execute(input),
+  },
+  file: {
+    selectFile: (options) => window.electron.file.selectFile(options),
+    selectDirectory: (title) => window.electron.file.selectDirectory(title),
+    isReadable: (path) => window.electron.file.isReadable(path),
+    isWritable: (path) => window.electron.file.isWritable(path),
+    getSize: (path) => window.electron.file.getSize(path),
+    getDirectorySize: (path) => window.electron.file.getDirectorySize(path),
+    getAvailableSpace: (path) => window.electron.file.getAvailableSpace(path),
   },
 };

@@ -1,9 +1,29 @@
+import type { NormalizedArchiveInput } from "@we-archive/core/archive";
 import type { TaskProgressEvent } from "@we-archive/core/services";
 import type {
-  Account,
   BackupTask,
-  Conversation,
-  DataStats,
+  ConversationDetail,
+  ConversationListParams,
+  ConversationListResult,
+  CreateTaskInput,
+  ExecuteExportInput,
+  ExecuteExportResult,
+  ExecuteImportInput,
+  ExecuteImportResult,
+  ExportDraftInput,
+  ExportDraftPlan,
+  ImportDraftPlan,
+  MessageListParams,
+  MessageListResult,
+  RestoreExecutionResult,
+  RestorePointSummary,
+  RestoreStrategyInput,
+  RestoreStrategyPreview,
+  SettingWriteResult,
+  TaskDetail,
+  TaskLog,
+  TaskLogListParams,
+  WeArchiveHomeData,
 } from "@we-archive/core/types";
 import type { IpcRendererEvent } from "electron";
 import { contextBridge, ipcRenderer } from "electron";
@@ -20,31 +40,54 @@ export interface ElectronAPI {
     close: () => void;
   };
 
-  // 数据库
-  database: {
-    getAccount: () => Promise<Account | null>;
-    getStats: () => Promise<DataStats>;
-    getConversations: (params: { limit?: number; offset?: number }) => Promise<{
-      items: Conversation[];
-      total: number;
-    }>;
+  overview: {
+    getData: () => Promise<WeArchiveHomeData>;
+    seedFixture: () => Promise<{ seeded: boolean }>;
   };
 
-  // 备份任务
-  backup: {
-    getTasks: () => Promise<BackupTask[]>;
-    start: (params: {
-      name: string;
-      accountId: number;
-      savePath: string;
-    }) => Promise<BackupTask>;
-    pause: (taskId: number) => Promise<void>;
-    resume: (taskId: number) => Promise<void>;
-    cancel: (taskId: number) => Promise<void>;
+  conversations: {
+    list: (params: ConversationListParams) => Promise<ConversationListResult>;
+    getDetail: (conversationId: string | number) => Promise<ConversationDetail>;
+  };
+
+  messages: {
+    list: (params: MessageListParams) => Promise<MessageListResult>;
+  };
+
+  tasks: {
+    list: () => Promise<BackupTask[]>;
+    create: (input?: Partial<CreateTaskInput>) => Promise<BackupTask>;
+    start: (taskId: number) => Promise<BackupTask>;
+    pause: (taskId: number) => Promise<BackupTask>;
+    resume: (taskId: number) => Promise<BackupTask>;
+    cancel: (taskId: number) => Promise<BackupTask>;
+    retry: (taskId: number) => Promise<BackupTask>;
+    getDetail: (taskId: number) => Promise<TaskDetail>;
+    listLogs: (params?: TaskLogListParams) => Promise<TaskLog[]>;
     onProgress: (callback: (event: TaskProgressEvent) => void) => () => void;
   };
 
-  // 文件系统
+  transfer: {
+    planImport: (input: NormalizedArchiveInput) => Promise<ImportDraftPlan>;
+    planExport: (input: ExportDraftInput) => Promise<ExportDraftPlan>;
+    executeImport: (input?: ExecuteImportInput) => Promise<ExecuteImportResult>;
+    executeExport: (input: ExecuteExportInput) => Promise<ExecuteExportResult>;
+  };
+
+  settings: {
+    get: (key: string) => Promise<unknown>;
+    set: (key: string, value: unknown) => Promise<SettingWriteResult>;
+  };
+
+  restore: {
+    listPoints: () => Promise<RestorePointSummary[]>;
+    checkPoint: (restorePointId: number) => Promise<RestorePointSummary | null>;
+    previewStrategy: (
+      input: RestoreStrategyInput,
+    ) => Promise<RestoreStrategyPreview>;
+    execute: (input: RestoreStrategyInput) => Promise<RestoreExecutionResult>;
+  };
+
   file: {
     selectFile: (options?: {
       title?: string;
@@ -71,28 +114,62 @@ const api: ElectronAPI = {
     close: () => ipcRenderer.send("window:close"),
   },
 
-  database: {
-    getAccount: () => ipcRenderer.invoke("database:getAccount"),
-    getStats: () => ipcRenderer.invoke("database:getStats"),
-    getConversations: (params) =>
-      ipcRenderer.invoke("database:getConversations", params),
+  overview: {
+    getData: () => ipcRenderer.invoke("overview:getData"),
+    seedFixture: () => ipcRenderer.invoke("overview:seedFixture"),
   },
 
-  backup: {
-    getTasks: () => ipcRenderer.invoke("backup:getTasks"),
-    start: (params) => ipcRenderer.invoke("backup:start", params),
-    pause: (taskId) => ipcRenderer.invoke("backup:pause", taskId),
-    resume: (taskId) => ipcRenderer.invoke("backup:resume", taskId),
-    cancel: (taskId) => ipcRenderer.invoke("backup:cancel", taskId),
+  conversations: {
+    list: (params) => ipcRenderer.invoke("conversations:list", params),
+    getDetail: (conversationId) =>
+      ipcRenderer.invoke("conversations:getDetail", conversationId),
+  },
+
+  messages: {
+    list: (params) => ipcRenderer.invoke("messages:list", params),
+  },
+
+  tasks: {
+    list: () => ipcRenderer.invoke("tasks:list"),
+    create: (input) => ipcRenderer.invoke("tasks:create", input),
+    start: (taskId) => ipcRenderer.invoke("tasks:start", taskId),
+    pause: (taskId) => ipcRenderer.invoke("tasks:pause", taskId),
+    resume: (taskId) => ipcRenderer.invoke("tasks:resume", taskId),
+    cancel: (taskId) => ipcRenderer.invoke("tasks:cancel", taskId),
+    retry: (taskId) => ipcRenderer.invoke("tasks:retry", taskId),
+    getDetail: (taskId) => ipcRenderer.invoke("tasks:getDetail", taskId),
+    listLogs: (params) => ipcRenderer.invoke("tasks:listLogs", params),
     onProgress: (callback) => {
       const handler = (_event: IpcRendererEvent, data: TaskProgressEvent) =>
         callback(data);
       ipcRenderer.on("task:progress", handler);
-      // 返回清理函数
       return () => {
         ipcRenderer.removeListener("task:progress", handler);
       };
     },
+  },
+
+  transfer: {
+    planImport: (input) => ipcRenderer.invoke("transfer:planImport", input),
+    planExport: (input) => ipcRenderer.invoke("transfer:planExport", input),
+    executeImport: (input) =>
+      ipcRenderer.invoke("transfer:executeImport", input),
+    executeExport: (input) =>
+      ipcRenderer.invoke("transfer:executeExport", input),
+  },
+
+  settings: {
+    get: (key) => ipcRenderer.invoke("settings:get", key),
+    set: (key, value) => ipcRenderer.invoke("settings:set", key, value),
+  },
+
+  restore: {
+    listPoints: () => ipcRenderer.invoke("restore:listPoints"),
+    checkPoint: (restorePointId) =>
+      ipcRenderer.invoke("restore:checkPoint", restorePointId),
+    previewStrategy: (input) =>
+      ipcRenderer.invoke("restore:previewStrategy", input),
+    execute: (input) => ipcRenderer.invoke("restore:execute", input),
   },
 
   file: {
@@ -109,10 +186,8 @@ const api: ElectronAPI = {
   },
 };
 
-// 在开发环境暴露给 window，方便调试
 if (process.env.NODE_ENV === "development") {
   contextBridge.exposeInMainWorld("api", api);
 }
 
-// 暴露给渲染进程
 contextBridge.exposeInMainWorld("electron", api);

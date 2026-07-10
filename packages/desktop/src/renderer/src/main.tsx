@@ -3,7 +3,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "@astryxdesign/core/reset.css";
-import "@astryxdesign/theme-neutral/theme.css";
 import "../../../node_modules/@astryxdesign/core/dist/astryx.css";
 
 import { electronAdapter } from "./api/adapter";

@@ -1,3 +1,5 @@
+import { WeArchiveRoutePage } from "@we-archive/ui-shared/components";
+
 export function BackupTasksPage() {
-  return null;
+  return <WeArchiveRoutePage viewId="backup" />;
 }

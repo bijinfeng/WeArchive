@@ -1,68 +1,59 @@
-import type {
-  WeArchiveOverviewAccount,
-  WeArchiveOverviewStats,
-  WeArchiveOverviewTask,
-  WeArchiveViewId,
-} from "@we-archive/core/types";
-import { EMPTY_OVERVIEW_STATS } from "@we-archive/core/utils";
-import { WeArchiveShell } from "@we-archive/ui-shared/components";
-import { useCallback, useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import type { WeArchiveViewId } from "@we-archive/core/types";
+import {
+  getWeArchivePathFromView,
+  getWeArchiveViewFromPathname,
+  WeArchiveShell,
+} from "@we-archive/ui-shared/components";
+import { initApiAdapter, useWeArchiveData } from "@we-archive/ui-shared/hooks";
+import { useCallback } from "react";
 
-import { loadOverview, startBackup } from "./api";
+import { fnosAdapter } from "./api";
+
+initApiAdapter(fnosAdapter);
 
 export function App() {
-  const [activeView, setActiveView] = useState<WeArchiveViewId>("overview");
-  const [account, setAccount] = useState<WeArchiveOverviewAccount | null>(null);
-  const [stats, setStats] =
-    useState<WeArchiveOverviewStats>(EMPTY_OVERVIEW_STATS);
-  const [tasks, setTasks] = useState<WeArchiveOverviewTask[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const archiveData = useWeArchiveData();
+  const activeView = getWeArchiveViewFromPathname(location.pathname);
 
-  const refresh = useCallback(async (signal?: AbortSignal) => {
-    setError(null);
-    const overview = await loadOverview(signal);
-    setAccount(overview.account);
-    setStats(overview.stats);
-    setTasks(overview.tasks);
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    refresh(controller.signal)
-      .catch((reason: unknown) => {
-        if (!controller.signal.aborted) {
-          setError(reason instanceof Error ? reason.message : "加载失败");
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => controller.abort();
-  }, [refresh]);
+  const goToView = useCallback(
+    (viewId: WeArchiveViewId) => {
+      void navigate({ to: getWeArchivePathFromView(viewId) });
+    },
+    [navigate],
+  );
 
   const handleStartBackup = useCallback(async () => {
-    await startBackup();
-    await refresh();
-    setActiveView("backup");
-  }, [refresh]);
+    await archiveData.startBackup();
+    goToView("backup");
+  }, [archiveData, goToView]);
 
   return (
     <WeArchiveShell
-      account={account}
-      stats={stats}
-      tasks={tasks}
-      isLoading={isLoading}
-      error={error}
+      account={archiveData.account}
+      archiveStatus={archiveData.archiveStatus}
+      issues={archiveData.issues}
+      stats={archiveData.stats}
+      tasks={archiveData.tasks}
+      isLoading={archiveData.isLoading}
+      error={getErrorMessage(archiveData.error)}
       activeView={activeView}
       platformLabel="飞牛 NAS 原生应用"
       runtimePlatform="fnos"
-      onActiveViewChange={setActiveView}
+      onActiveViewChange={goToView}
       onBackupAction={handleStartBackup}
-    />
+    >
+      <Outlet />
+    </WeArchiveShell>
   );
+}
+
+function getErrorMessage(error: unknown) {
+  if (!error) {
+    return null;
+  }
+
+  return error instanceof Error ? error.message : "加载失败";
 }
